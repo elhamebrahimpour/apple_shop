@@ -18,7 +18,7 @@ class ProductsScreen extends StatelessWidget {
                 child: CustomAppBar2(),
               ),
               SliverPadding(
-                padding: const EdgeInsets.only(left: 22, right: 22),
+                padding: const EdgeInsets.only(left: 22, right: 22, bottom: 44),
                 sliver: SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
