@@ -1,12 +1,15 @@
 import 'dart:ui';
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/datasource/authentication_service.dart';
+import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/category_screen.dart';
 import 'package:apple_shop/screens/home_screen.dart';
 import 'package:apple_shop/screens/profile_screen.dart';
 import 'package:apple_shop/screens/shopping_cart_screen.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  await getItInit();
   runApp(const MyApplication());
 }
 

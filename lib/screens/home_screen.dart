@@ -20,9 +20,7 @@ class HomeScreen extends StatelessWidget {
             slivers: [
               const SliverToBoxAdapter(
                 child: CustomAppBar(
-                  title: 'جستجوی محصولات',
-                  searchIconVisibility: true,
-                ),
+                    title: 'جستجوی محصولات', searchIconVisibility: true),
               ),
               const SliverToBoxAdapter(
                 child: BannerSlider(),
@@ -96,12 +94,14 @@ class HomeScreen extends StatelessWidget {
                   height: 242,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: 6,
-                    itemBuilder: ((context, index) => const Padding(
-                          padding:
-                              EdgeInsets.only(left: 6, bottom: 40, right: 22),
-                          child: ProductItem(),
-                        )),
+                    itemCount: 3,
+                    itemBuilder: ((context, index) {
+                      return const Padding(
+                        padding:
+                            EdgeInsets.only(left: 6, bottom: 40, right: 22),
+                        child: ProductItem(),
+                      );
+                    }),
                   ),
                 ),
               ),
@@ -140,14 +140,16 @@ class HomeScreen extends StatelessWidget {
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 3,
-                    itemBuilder: ((context, index) => const Padding(
-                          padding:
-                              EdgeInsets.only(left: 6, bottom: 40, right: 22),
-                          child: ProductItem(),
-                        )),
+                    itemBuilder: ((context, index) {
+                      return const Padding(
+                        padding:
+                            EdgeInsets.only(left: 6, bottom: 40, right: 22),
+                        child: ProductItem(),
+                      );
+                    }),
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ),
