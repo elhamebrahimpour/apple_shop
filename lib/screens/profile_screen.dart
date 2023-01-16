@@ -1,5 +1,4 @@
 import 'package:apple_shop/constants/app_colors.dart';
-import 'package:apple_shop/data/datasource/authentication_service.dart';
 import 'package:apple_shop/widgets/category_items.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -65,16 +64,6 @@ class ProfileScreen extends StatelessWidget {
                     (index) => list[index],
                   ),
                 ],
-              ),
-              const SizedBox(
-                height: 32,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  AuthenticationRemote()
-                      .register('elhaaam0001', '123456789', '123456789');
-                },
-                child: const Text('register user'),
               ),
               const Spacer(),
               const Text(

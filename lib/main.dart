@@ -1,15 +1,16 @@
 import 'dart:ui';
 import 'package:apple_shop/constants/app_colors.dart';
-import 'package:apple_shop/data/datasource/authentication_service.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/category_screen.dart';
 import 'package:apple_shop/screens/home_screen.dart';
 import 'package:apple_shop/screens/profile_screen.dart';
+import 'package:apple_shop/screens/register_screen.dart';
 import 'package:apple_shop/screens/shopping_cart_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() async {
-  await getItInit();
+  WidgetsFlutterBinding.ensureInitialized();
+  await getApiInit();
   runApp(const MyApplication());
 }
 
@@ -28,10 +29,8 @@ class _MyApplicationState extends State<MyApplication> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: IndexedStack(
-          index: _selectedBottomNavigationItem,
-          children: getLayouts(),
-        ),
+        body: const RegisterScreen(),
+        //IndexedStack(index: _selectedBottomNavigationItem,children: getLayouts(),),
         bottomNavigationBar: fixedBottomNavigation(),
       ),
     );
