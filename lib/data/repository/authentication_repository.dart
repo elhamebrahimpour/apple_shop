@@ -29,6 +29,7 @@ class AuthenticationRepository extends IAuthenticationRepository {
     }
   }
 
+//handles user registration action as well as exceptions
   @override
   Future<Either<String, String>> registerUser(
       String username, String password, String passwordConfirm) async {

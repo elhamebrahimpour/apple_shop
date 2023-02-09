@@ -36,6 +36,7 @@ class RegisterScreen extends StatelessWidget {
                 var either = await AuthenticationRepository()
                     .loginUser('hamid', '12345678');
                 //either.fold((errorMessage) => print(errorMessage),(responseMessage) => print(responseMessage));
+                //AuthManager.readUsername();
               },
               child: const Text('login user'),
             ),

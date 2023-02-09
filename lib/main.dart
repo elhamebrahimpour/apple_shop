@@ -1,16 +1,19 @@
 import 'dart:ui';
+import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/category_screen.dart';
 import 'package:apple_shop/screens/home_screen.dart';
+import 'package:apple_shop/screens/login_screen.dart';
 import 'package:apple_shop/screens/profile_screen.dart';
-import 'package:apple_shop/screens/register_screen.dart';
 import 'package:apple_shop/screens/shopping_cart_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
+  //add this here because sharedPref has native codes
   WidgetsFlutterBinding.ensureInitialized();
-  await getApiInit();
+  await getItInit();
   runApp(const MyApplication());
 }
 
@@ -29,7 +32,10 @@ class _MyApplicationState extends State<MyApplication> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: const RegisterScreen(),
+        body: BlocProvider(
+          create: (context) => AuthBloc(),
+          child: LoginScreen(),
+        ),
         //IndexedStack(index: _selectedBottomNavigationItem,children: getLayouts(),),
         bottomNavigationBar: fixedBottomNavigation(),
       ),

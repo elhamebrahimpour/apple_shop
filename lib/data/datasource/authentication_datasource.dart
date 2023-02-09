@@ -15,6 +15,8 @@ abstract class IAuthenticationRemote {
 class AuthenticationRemote implements IAuthenticationRemote {
   final Dio _dio = serviceLocator.get();
 
+
+//send registeration request to the server
   @override
   Future<void> register(
       String username, String password, String passwordConfirm) async {

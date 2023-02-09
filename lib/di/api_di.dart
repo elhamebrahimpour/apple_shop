@@ -6,16 +6,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 var serviceLocator = GetIt.instance;
 
-Future getApiInit() async {
+Future getItInit() async {
   serviceLocator.registerSingleton<Dio>(
       Dio(BaseOptions(baseUrl: 'http://startflutter.ir/api/')));
 
   serviceLocator.registerSingleton<SharedPreferences>(
       await SharedPreferences.getInstance());
 
+//app datasource
   serviceLocator
       .registerFactory<IAuthenticationRemote>(() => AuthenticationRemote());
 
+//app repository
   serviceLocator.registerFactory<IAuthenticationRepository>(
       () => AuthenticationRepository());
 }
