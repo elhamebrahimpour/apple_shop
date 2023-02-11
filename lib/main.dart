@@ -1,10 +1,10 @@
 import 'dart:ui';
-import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
+import 'package:apple_shop/bloc/category/category_bloc.dart';
+import 'package:apple_shop/bloc/home/home_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/category_screen.dart';
 import 'package:apple_shop/screens/home_screen.dart';
-import 'package:apple_shop/screens/login_screen.dart';
 import 'package:apple_shop/screens/profile_screen.dart';
 import 'package:apple_shop/screens/shopping_cart_screen.dart';
 import 'package:flutter/material.dart';
@@ -32,11 +32,10 @@ class _MyApplicationState extends State<MyApplication> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: BlocProvider(
-          create: (context) => AuthBloc(),
-          child: LoginScreen(),
+        body: IndexedStack(
+          index: _selectedBottomNavigationItem,
+          children: getLayouts(),
         ),
-        //IndexedStack(index: _selectedBottomNavigationItem,children: getLayouts(),),
         bottomNavigationBar: fixedBottomNavigation(),
       ),
     );
@@ -46,8 +45,14 @@ class _MyApplicationState extends State<MyApplication> {
     return <Widget>[
       const ProfileScreen(),
       const ShoppingCartScreen(),
-      const CategoryScreen(),
-      const HomeScreen(),
+      BlocProvider(
+        create: (context) => CategoryBloc(),
+        child: const CategoryScreen(),
+      ),
+      BlocProvider(
+        create: (context) => HomeBloc(),
+        child: const HomeScreen(),
+      ),
     ];
   }
 

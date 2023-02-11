@@ -6,15 +6,14 @@ import 'package:flutter/foundation.dart';
 //this class sends request to the server and handles the error via sending request
 //DataSource
 
-abstract class IAuthenticationRemote {
+abstract class IAuthenticationDatasource {
   Future<void> register(
       String username, String password, String passwordConfirm);
   Future<String> login(String username, String password);
 }
 
-class AuthenticationRemote implements IAuthenticationRemote {
+class AuthenticationRemoteDatasource implements IAuthenticationDatasource {
   final Dio _dio = serviceLocator.get();
-
 
 //send registeration request to the server
   @override

@@ -1,13 +1,27 @@
+import 'package:apple_shop/bloc/home/home_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/repository/banner_repository.dart';
 import 'package:apple_shop/screens/products_screen.dart';
 import 'package:apple_shop/widgets/banner_slider.dart';
 import 'package:apple_shop/widgets/category_items.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:apple_shop/widgets/product_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<HomeBloc>(context).add(BannerLoadedRequest());
+  }
 
   @override
   Widget build(BuildContext context) {

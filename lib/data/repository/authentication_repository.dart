@@ -12,7 +12,7 @@ abstract class IAuthenticationRepository {
 }
 
 class AuthenticationRepository extends IAuthenticationRepository {
-  final IAuthenticationRemote _dataSource = serviceLocator.get();
+  final IAuthenticationDatasource _dataSource = serviceLocator.get();
   @override
   Future<Either<String, String>> loginUser(
       String username, String password) async {
