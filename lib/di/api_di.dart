@@ -1,9 +1,11 @@
 import 'package:apple_shop/data/datasource/authentication_datasource.dart';
 import 'package:apple_shop/data/datasource/banner_datasource.dart';
 import 'package:apple_shop/data/datasource/category_datasource.dart';
+import 'package:apple_shop/data/datasource/product_datasource.dart';
 import 'package:apple_shop/data/repository/authentication_repository.dart';
 import 'package:apple_shop/data/repository/banner_repository.dart';
 import 'package:apple_shop/data/repository/category_repository.dart';
+import 'package:apple_shop/data/repository/product_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +19,7 @@ Future getItInit() async {
   serviceLocator.registerSingleton<SharedPreferences>(
       await SharedPreferences.getInstance());
 
-//app datasource
+//app datasources
   serviceLocator.registerFactory<IAuthenticationDatasource>(
       () => AuthenticationRemoteDatasource());
 
@@ -26,7 +28,11 @@ Future getItInit() async {
 
   serviceLocator
       .registerFactory<IBannerDatasource>(() => BannerRemoteDatasource());
-//app repository
+
+  serviceLocator
+      .registerFactory<IProductDatasource>(() => ProductRemoteDatasource());
+
+//app repositories
   serviceLocator.registerFactory<IAuthenticationRepository>(
       () => AuthenticationRepository());
 
@@ -34,4 +40,6 @@ Future getItInit() async {
       .registerFactory<ICategoryRepository>(() => CategoryRepository());
 
   serviceLocator.registerFactory<IBannerRepository>(() => BannerRepository());
+
+  serviceLocator.registerFactory<IProductRepository>(() => ProductRepository());
 }

@@ -22,7 +22,7 @@ class ProductsScreen extends StatelessWidget {
                 sliver: SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      return const ProductItem();
+                      return const  Text('data');
                     },
                     childCount: 12,
                   ),

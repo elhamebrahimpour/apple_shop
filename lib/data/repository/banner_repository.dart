@@ -5,13 +5,13 @@ import 'package:apple_shop/utils/api_exception.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class IBannerRepository {
-  Future<Either<String, List<Banner>>> getBanners();
+  Future<Either<String, List<AdvertiseBanner>>> getBanners();
 }
 
 class BannerRepository extends IBannerRepository {
   final IBannerDatasource _datasource = serviceLocator.get();
   @override
-  Future<Either<String, List<Banner>>> getBanners() async {
+  Future<Either<String, List<AdvertiseBanner>>> getBanners() async {
     try {
       var response = await _datasource.getBanners();
       return right(response);

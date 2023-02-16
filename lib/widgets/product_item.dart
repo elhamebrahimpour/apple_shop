@@ -1,11 +1,12 @@
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/screens/product_detail.dart';
+import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({
-    Key? key,
-  }) : super(key: key);
+  const ProductItem(this.product, {Key? key}) : super(key: key);
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,10 @@ class ProductItem extends StatelessWidget {
                 Expanded(
                   child: Container(),
                 ), //width:double.infinity
-                Image.asset('images/iphone.png'),
+                SizedBox(
+                    height: 91,
+                    width: 91,
+                    child: CachedWidget(imageUrl: product.thumbnail)),
                 Positioned(
                   top: 0,
                   right: 8,
@@ -48,11 +52,12 @@ class ProductItem extends StatelessWidget {
                       color: AppColors.redColor,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 2, horizontal: 5),
                       child: Text(
-                        '%3',
-                        style: TextStyle(
+                        '%${product.percent!.round()}',
+                        style: const TextStyle(
                             fontFamily: 'sb',
                             color: AppColors.whiteColor,
                             fontSize: 12),
@@ -63,14 +68,16 @@ class ProductItem extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            const Padding(
-              padding: EdgeInsets.only(right: 10, bottom: 6, top: 10),
+            Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 6, top: 10),
               child: Text(
-                'آیفون 13 پرومکس',
-                style: TextStyle(
+                product.name,
+                maxLines: 2,
+                style: const TextStyle(
                     fontFamily: 'sm',
                     color: AppColors.blackColor,
-                    fontSize: 14),
+                    fontSize: 12,
+                    overflow: TextOverflow.ellipsis),
               ),
             ),
             //price container handled
@@ -104,18 +111,18 @@ class ProductItem extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: const [
+                      children: [
                         Text(
-                          '46.800.000',
-                          style: TextStyle(
+                          product.price.toString(),
+                          style: const TextStyle(
                               fontFamily: 'sm',
                               color: AppColors.whiteColor,
                               fontSize: 12,
                               decoration: TextDecoration.lineThrough),
                         ),
                         Text(
-                          '45.000.000',
-                          style: TextStyle(
+                          product.realPrice.toString(),
+                          style: const TextStyle(
                               fontFamily: 'sm',
                               color: AppColors.whiteColor,
                               fontSize: 14),

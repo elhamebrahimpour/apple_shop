@@ -1,11 +1,15 @@
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/model/category.dart';
+import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
 
 class CategoryItems extends StatelessWidget {
-  const CategoryItems({Key? key}) : super(key: key);
+  const CategoryItems(this.category, {Key? key}) : super(key: key);
+  final Category category;
 
   @override
   Widget build(BuildContext context) {
+    int hexColor = int.parse('ff${category.color}', radix: 16);
     return Padding(
       padding: const EdgeInsets.only(left: 12),
       child: Column(
@@ -13,35 +17,47 @@ class CategoryItems extends StatelessWidget {
           Stack(
             alignment: AlignmentDirectional.center,
             children: [
+              //get category small box
               Container(
                 height: 56,
                 width: 56,
                 decoration: ShapeDecoration(
-                  color: AppColors.blueColor,
+                  color: Color(hexColor),
                   shape: ContinuousRectangleBorder(
                     borderRadius: BorderRadius.circular(46),
                   ),
-                  shadows: const [
+                  shadows: [
                     BoxShadow(
-                      color: AppColors.blueColor,
+                      color: Color(hexColor),
                       blurRadius: 20,
                       spreadRadius: -8,
-                      offset: Offset(0.0, 6),
+                      offset: const Offset(0.0, 6),
                     )
                   ],
                 ),
               ),
-              const Icon(
-                Icons.ads_click,
-                color: AppColors.whiteColor,
-                size: 32,
+              //get category icon
+              SizedBox(
+                height: 28,
+                width: 28,
+                child: Center(
+                  child: CachedWidget(imageUrl: category.icon),
+                ),
               ),
             ],
           ),
           const SizedBox(
             height: 5,
           ),
-          const Text('همه'),
+          //get category title
+          Text(
+            category.title!,
+            style: const TextStyle(
+              color: AppColors.blackColor,
+              fontSize: 12,
+              fontFamily: 'sm',
+            ),
+          ),
         ],
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:apple_shop/constants/app_colors.dart';
-import 'package:apple_shop/widgets/category_items.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -8,20 +7,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var list = const [
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-      CategoryItems(),
-    ];
+    var list = const [];
     return Scaffold(
       backgroundColor: AppColors.backColor,
       body: SafeArea(
@@ -60,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
                 runSpacing: 20,
                 children: [
                   ...List.generate(
-                    12,
+                    0,
                     (index) => list[index],
                   ),
                 ],

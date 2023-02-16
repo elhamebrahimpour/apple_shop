@@ -1,13 +1,13 @@
-class Banner {
+class AdvertiseBanner {
   String? categoryId;
   String? collectionId;
   String? id;
   String? thumbnail;
 
-  Banner(this.categoryId, this.collectionId, this.id, this.thumbnail);
+  AdvertiseBanner(this.categoryId, this.collectionId, this.id, this.thumbnail);
 
-  factory Banner.fromJson(Map<String, dynamic> jsonObject) {
-    return Banner(
+  factory AdvertiseBanner.fromJson(Map<String, dynamic> jsonObject) {
+    return AdvertiseBanner(
       jsonObject['categoryId'],
       jsonObject['collectionId'],
       jsonObject['id'],

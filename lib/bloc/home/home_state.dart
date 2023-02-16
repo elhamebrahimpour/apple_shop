@@ -6,7 +6,9 @@ class HomeInitialState extends HomeState {}
 
 class HomeLoadingState extends HomeState {}
 
-class HomeResponseState extends HomeState {
-  Either<String, List<Banner>> response;
-  HomeResponseState(this.response);
+class HomeSuccessResponseState extends HomeState {
+  Either<String, List<AdvertiseBanner>> banners;
+  Either<String, List<Category>> categories;
+  Either<String, List<Product>> products;
+  HomeSuccessResponseState(this.banners, this.categories, this.products);
 }
