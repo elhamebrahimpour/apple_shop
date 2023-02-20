@@ -12,7 +12,11 @@ class ProductDetailRemoteDatasource extends IProductDetailDatasource {
   @override
   Future<List<ProductImage>> getImageGallery() async {
     try {
-      final response = await _dio.get('collections/gallery/records');
+      Map<String, String> queryParams = {
+        'filter': 'product_id="0tc0e5ju89x5ogj"'
+      };
+      final response = await _dio.get('collections/gallery/records',
+          queryParameters: queryParams);
       return response.data['items']
           .map<ProductImage>((jsonObject) => ProductImage.fromJson(jsonObject))
           .toList();
