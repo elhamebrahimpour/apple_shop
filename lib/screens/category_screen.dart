@@ -37,7 +37,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
               BlocBuilder<CategoryBloc, CategoryState>(
                 builder: ((context, state) {
-                  if (state is CategoryLoadingState ) {
+                  if (state is CategoryLoadingState) {
                     return const SliverToBoxAdapter(
                       child: Center(
                         child: CircularProgressIndicator(
@@ -47,7 +47,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                       ),
                     );
                   }
-                  if (state is CategoryResponseState ) {
+                  if (state is CategoryResponseState) {
                     return state.response.fold(
                       (error) => SliverToBoxAdapter(
                         child: Center(

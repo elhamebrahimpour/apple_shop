@@ -21,7 +21,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       var bannerList = await _bannerRepository.getBanners();
       var categoryList = await _categoryRepository.getCategoryList();
       var productList = await _productRepository.getProducts();
-      emit(HomeSuccessResponseState(bannerList, categoryList, productList));
+      var bestSellerProductList =
+          await _productRepository.getBestSellerProducts();
+      var hotestProductList = await _productRepository.getHotestProducts();
+
+      emit(HomeSuccessResponseState(bannerList, categoryList, productList,
+          bestSellerProductList, hotestProductList));
     });
   }
 }

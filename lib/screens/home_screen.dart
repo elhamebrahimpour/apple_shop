@@ -35,13 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
               textDirection: TextDirection.rtl,
               child: CustomScrollView(
                 slivers: [
-                  //get appbar
-                  const SliverToBoxAdapter(
-                    child: CustomAppBar(
-                        title: 'جستجوی محصولات', searchIconVisibility: true),
-                  ),
-                  //get banners
-                  if (state is HomeLoadingState) ...[
+                  if (state is HomeLoadingState) ...{
                     const SliverToBoxAdapter(
                       child: Center(
                         child: CircularProgressIndicator(
@@ -50,48 +44,64 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                  ],
-                  if (state is HomeSuccessResponseState) ...[
-                    state.banners.fold((exception) {
-                      return SliverToBoxAdapter(
-                        child: Center(
-                          child: Text(exception),
-                        ),
-                      );
-                    }, (bannerList) {
-                      return SliverToBoxAdapter(
-                        child: BannerSlider(bannerList),
-                      );
-                    })
-                  ],
-                  //get categories
-                  const _GetCategoriesListTitle(),
-                  if (state is HomeSuccessResponseState) ...[
-                    state.categories.fold(
-                      (exception) => SliverToBoxAdapter(
-                        child: Center(
-                          child: Text(exception),
-                        ),
-                      ),
-                      (categoryList) => _GetCategoriesList(categoryList),
+                  } else ...{
+                    //get search appbar
+                    const SliverToBoxAdapter(
+                      child: CustomAppBar(
+                          title: 'جستجوی محصولات', searchIconVisibility: true),
                     ),
-                  ],
-                  //get best selling products
-                  const _GetBestSellingProductsTitle(),
-                  if (state is HomeSuccessResponseState) ...[
-                    state.products.fold(
-                      (exception) => SliverToBoxAdapter(
-                        child: Center(
-                          child: Text(exception),
-                        ),
-                      ),
-                      (productList) => _GetBestSellingProducts(productList),
-                    ),
-                  ],
+                    //get banners
 
-                  //get most visited products
-                  const _GetMostVisitedProductsTitle(),
-                  const _GetMostVisitedProducts()
+                    if (state is HomeSuccessResponseState) ...[
+                      state.banners.fold((exception) {
+                        return SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        );
+                      }, (bannerList) {
+                        return SliverToBoxAdapter(
+                          child: BannerSlider(bannerList),
+                        );
+                      })
+                    ],
+                    //get categories
+                    const _GetCategoriesListTitle(),
+                    if (state is HomeSuccessResponseState) ...[
+                      state.categories.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (categoryList) => _GetCategoriesList(categoryList),
+                      ),
+                    ],
+                    //get best selling products
+                    const _GetBestSellingProductsTitle(),
+                    if (state is HomeSuccessResponseState) ...[
+                      state.bestSellerproducts.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (productList) => _GetBestSellingProducts(productList),
+                      ),
+                    ],
+                    //get most visited products
+                    const _GetMostVisitedProductsTitle(),
+                    if (state is HomeSuccessResponseState) ...[
+                      state.hotestproducts.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (productList) => _GetMostVisitedProducts(productList),
+                      ),
+                    ],
+                  },
                 ],
               ),
             ),
@@ -103,9 +113,8 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _GetMostVisitedProducts extends StatelessWidget {
-  const _GetMostVisitedProducts({
-    Key? key,
-  }) : super(key: key);
+  const _GetMostVisitedProducts(this.productList, {Key? key}) : super(key: key);
+  final List<Product> productList;
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +123,11 @@ class _GetMostVisitedProducts extends StatelessWidget {
         height: 242,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: 3,
+          itemCount: productList.length,
           itemBuilder: ((context, index) {
-            return const Padding(
-              padding: EdgeInsets.only(left: 6, bottom: 40, right: 22),
-              child: Text('data'),
+            return Padding(
+              padding: const EdgeInsets.only(left: 6, bottom: 40, right: 22),
+              child: ProductItem(productList[index]),
             );
           }),
         ),
