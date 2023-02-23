@@ -51,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'جستجوی محصولات', searchIconVisibility: true),
                     ),
                     //get banners
-
                     if (state is HomeSuccessResponseState) ...[
                       state.banners.fold((exception) {
                         return SliverToBoxAdapter(

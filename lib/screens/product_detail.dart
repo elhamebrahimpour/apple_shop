@@ -1,57 +1,96 @@
 import 'dart:ui';
+import 'package:apple_shop/bloc/product/product_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/model/product_gallery_image.dart';
 import 'package:apple_shop/data/repository/product_detail_repository.dart';
 import 'package:apple_shop/di/api_di.dart';
+import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProductDetail extends StatelessWidget {
+class ProductDetail extends StatefulWidget {
   const ProductDetail({super.key});
 
   @override
+  State<ProductDetail> createState() => _ProductDetailState();
+}
+
+class _ProductDetailState extends State<ProductDetail> {
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<ProductBloc>(context).add(ProductDetailInitialized());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backColor,
-      body: SafeArea(
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: CustomScrollView(
-            slivers: [
-              //get appbar
-              const SliverToBoxAdapter(
-                child: SingleProductAppbar(),
+    return BlocBuilder<ProductBloc, ProductState>(
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AppColors.backColor,
+          body: SafeArea(
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: CustomScrollView(
+                slivers: [
+                  if (state is ProductDetailLoadingState) ...{
+                    const SliverToBoxAdapter(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.blueColor,
+                          strokeWidth: 4,
+                        ),
+                      ),
+                    ),
+                  } else ...{
+                    //get appbar
+                    const SliverToBoxAdapter(
+                      child: SingleProductAppbar(),
+                    ),
+                    //get product name
+                    const _GetProductName(),
+                    //get product image
+                    if (state is ProductDetailResponseState) ...{
+                      state.productImages.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (productImages) => _GetProductImage(productImages),
+                      )
+                    },
+                    //get product color
+                    const _GetProductColor(),
+                    //get product memory
+                    const _GetProductMemory(),
+                    //get product properties
+                    const _GetProductProperties(),
+                    //get product descryption
+                    const _GetProductDescryption(),
+                    //get users opinion
+                    const _GetUserOpinion(),
+                    //price tag and add to card section
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 22, vertical: 22),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            AddToCartButton(),
+                            ProductPriceTag(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  }
+                ],
               ),
-              //get product name
-              const _GetProductName(),
-              //get product image
-              const _GetProductImage(),
-              //get product color
-              const _GetProductColor(),
-              //get product memory
-              const _GetProductMemory(),
-              //get product properties
-              const _GetProductProperties(),
-              //get product descryption
-              const _GetProductDescryption(),
-              //get users opinion
-              const _GetUserOpinion(),
-              //price tag and add to card section
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      AddToCartButton(),
-                      ProductPriceTag(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -353,23 +392,28 @@ class _GetProductColor extends StatelessWidget {
   }
 }
 
-class _GetProductImage extends StatelessWidget {
-  const _GetProductImage({
-    Key? key,
-  }) : super(key: key);
+class _GetProductImage extends StatefulWidget {
+  List<ProductImage> productImages;
+  int selectedItemIndex = 0;
+  _GetProductImage(this.productImages, {Key? key}) : super(key: key);
 
+  @override
+  State<_GetProductImage> createState() => _GetProductImageState();
+}
+
+class _GetProductImageState extends State<_GetProductImage> {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
-        height: 284,
+        height: 320,
         decoration: BoxDecoration(
           color: AppColors.whiteColor,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Column(
             children: [
               Expanded(
@@ -379,7 +423,14 @@ class _GetProductImage extends StatelessWidget {
                   children: [
                     Image.asset('images/icon_favorite_deactive.png'),
                     Expanded(
-                      child: Image.asset('images/iphone.png'),
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 12, right: 12, bottom: 6),
+                        child: CachedWidget(
+                            imageUrl: widget
+                                .productImages[widget.selectedItemIndex]
+                                .imageUrl),
+                      ),
                     ),
                     const Text(
                       '2.4',
@@ -401,19 +452,28 @@ class _GetProductImage extends StatelessWidget {
                 height: 90,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 3,
+                  itemCount: widget.productImages.length,
                   itemBuilder: ((context, index) {
-                    return Container(
-                      padding: const EdgeInsets.only(top: 6, bottom: 6),
-                      margin: const EdgeInsets.only(left: 12),
-                      height: 90,
-                      width: 90,
-                      decoration: BoxDecoration(
-                        border:
-                            Border.all(width: 2, color: AppColors.greyColor),
-                        borderRadius: BorderRadius.circular(10),
+                    return GestureDetector(
+                      onTap: () => setState(() {
+                        widget.selectedItemIndex = index;
+                      }),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 2, vertical: 2),
+                        margin: const EdgeInsets.only(left: 12),
+                        height: 90,
+                        width: 90,
+                        decoration: BoxDecoration(
+                          border:
+                              Border.all(width: 1, color: AppColors.greyColor),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: CachedWidget(
+                          imageUrl: widget.productImages[index].imageUrl,
+                          radius: 10,
+                        ),
                       ),
-                      child: Image.asset('images/iphone.png'),
                     );
                   }),
                 ),
@@ -543,49 +603,38 @@ class AddToCartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        IProductDetailRepository _repository = serviceLocator.get();
-        var either = await _repository.getImageGallery();
-        either.fold(
-            (l) => print(l),
-            (r) => r.forEach((element) {
-                  print(element.imageUrl);
-                }));
-      },
-      child: Stack(
-        alignment: AlignmentDirectional.bottomCenter,
-        children: [
-          Container(
-            height: 60,
-            width: 140,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: AppColors.blueColor,
-            ),
-          ),
-          ClipRRect(
+    return Stack(
+      alignment: AlignmentDirectional.bottomCenter,
+      children: [
+        Container(
+          height: 60,
+          width: 140,
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-              child: const SizedBox(
-                height: 53,
-                width: 160,
-                child: Center(
-                  child: Text(
-                    'افزودن به سبد خرید',
-                    style: TextStyle(
-                      color: AppColors.whiteColor,
-                      fontFamily: 'sb',
-                      fontSize: 16,
-                    ),
+            color: AppColors.blueColor,
+          ),
+        ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: const SizedBox(
+              height: 53,
+              width: 160,
+              child: Center(
+                child: Text(
+                  'افزودن به سبد خرید',
+                  style: TextStyle(
+                    color: AppColors.whiteColor,
+                    fontFamily: 'sb',
+                    fontSize: 16,
                   ),
                 ),
               ),
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }

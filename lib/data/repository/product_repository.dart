@@ -7,7 +7,6 @@ import 'package:dartz/dartz.dart';
 abstract class IProductRepository {
   Future<Either<String, List<Product>>> getProducts();
   Future<Either<String, List<Product>>> getBestSellerProducts();
-
   Future<Either<String, List<Product>>> getHotestProducts();
 }
 
