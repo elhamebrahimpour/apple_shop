@@ -81,7 +81,7 @@ class _CategoryList extends StatelessWidget {
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           ((context, index) {
-            return CachedWidget(
+            return ImageCachedWidget(
               imageUrl: categoryList[index].thumbnail,
             );
           }),

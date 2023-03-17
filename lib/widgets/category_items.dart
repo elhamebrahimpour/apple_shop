@@ -41,7 +41,7 @@ class CategoryItems extends StatelessWidget {
                 height: 28,
                 width: 28,
                 child: Center(
-                  child: CachedWidget(imageUrl: category.icon),
+                  child: ImageCachedWidget(imageUrl: category.icon),
                 ),
               ),
             ],

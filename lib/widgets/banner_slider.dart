@@ -23,7 +23,7 @@ class BannerSlider extends StatelessWidget {
             itemBuilder: ((context, index) {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 6),
-                child: CachedWidget(
+                child: ImageCachedWidget(
                   imageUrl: bannerList[index].thumbnail,
                   radius: 15,
                 ),

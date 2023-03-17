@@ -17,7 +17,7 @@ class ProductItem extends StatelessWidget {
         MaterialPageRoute(
           builder: ((context) => BlocProvider(
                 create: (context) => ProductBloc(),
-                child: const ProductDetail(),
+                child: ProductDetailScreen(product),
               )),
         ),
       ),
@@ -43,7 +43,7 @@ class ProductItem extends StatelessWidget {
                 SizedBox(
                     height: 91,
                     width: 91,
-                    child: CachedWidget(imageUrl: product.thumbnail)),
+                    child: ImageCachedWidget(imageUrl: product.thumbnail)),
                 Positioned(
                   top: 0,
                   right: 8,

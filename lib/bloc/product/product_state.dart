@@ -8,5 +8,8 @@ class ProductDetailLoadingState extends ProductState {}
 
 class ProductDetailResponseState extends ProductState {
   Either<String, List<ProductImage>> productImages;
-  ProductDetailResponseState(this.productImages);
+  Either<String, List<ProductVaraint>> productVariants;
+
+  ProductDetailResponseState(
+      this.productImages, this.productVariants);
 }

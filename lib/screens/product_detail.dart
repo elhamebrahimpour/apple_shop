@@ -1,25 +1,27 @@
 import 'dart:ui';
 import 'package:apple_shop/bloc/product/product_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
-import 'package:apple_shop/data/repository/product_detail_repository.dart';
-import 'package:apple_shop/di/api_di.dart';
+import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProductDetail extends StatefulWidget {
-  const ProductDetail({super.key});
+class ProductDetailScreen extends StatefulWidget {
+  Product product;
+  ProductDetailScreen(this.product, {super.key});
 
   @override
-  State<ProductDetail> createState() => _ProductDetailState();
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _ProductDetailState extends State<ProductDetail> {
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ProductBloc>(context).add(ProductDetailInitialized());
+    BlocProvider.of<ProductBloc>(context)
+        .add(ProductDetailInitialized(widget.product.id));
   }
 
   @override
@@ -57,11 +59,29 @@ class _ProductDetailState extends State<ProductDetail> {
                             child: Text(exception),
                           ),
                         ),
-                        (productImages) => _GetProductImage(productImages),
+                        (productImages) => _GetProductImage(
+                            productImages, widget.product.thumbnail),
                       )
                     },
                     //get product color
-                    const _GetProductColor(),
+                    if (state is ProductDetailResponseState) ...{
+                      state.productVariants.fold((exception) {
+                        return SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        );
+                      }, (productVariantList) {
+                        for (var typeObject in productVariantList) {
+                          print(typeObject.variantTypes.title);
+
+                          for (var variantObject in typeObject.variantList) {
+                            print(variantObject.name);
+                          }
+                        }
+                        return _GetProductColor(productVariantList);
+                      })
+                    },
                     //get product memory
                     const _GetProductMemory(),
                     //get product properties
@@ -346,7 +366,9 @@ class _GetProductMemory extends StatelessWidget {
 }
 
 class _GetProductColor extends StatelessWidget {
-  const _GetProductColor({
+  List<ProductVaraint> productVaraint;
+  _GetProductColor(
+    this.productVaraint, {
     Key? key,
   }) : super(key: key);
 
@@ -358,9 +380,9 @@ class _GetProductColor extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'انتخاب رنگ',
-              style: TextStyle(
+            Text(
+              productVaraint[0].variantTypes.title,
+              style: const TextStyle(
                 color: AppColors.blackColor,
                 fontFamily: 'sb',
                 fontSize: 12,
@@ -394,8 +416,10 @@ class _GetProductColor extends StatelessWidget {
 
 class _GetProductImage extends StatefulWidget {
   List<ProductImage> productImages;
+  String defaultProductImageUrl;
   int selectedItemIndex = 0;
-  _GetProductImage(this.productImages, {Key? key}) : super(key: key);
+  _GetProductImage(this.productImages, this.defaultProductImageUrl, {Key? key})
+      : super(key: key);
 
   @override
   State<_GetProductImage> createState() => _GetProductImageState();
@@ -426,10 +450,11 @@ class _GetProductImageState extends State<_GetProductImage> {
                       child: Padding(
                         padding: const EdgeInsets.only(
                             left: 12, right: 12, bottom: 6),
-                        child: CachedWidget(
-                            imageUrl: widget
-                                .productImages[widget.selectedItemIndex]
-                                .imageUrl),
+                        child: ImageCachedWidget(
+                            imageUrl: (widget.productImages.isEmpty)
+                                ? widget.defaultProductImageUrl
+                                : widget.productImages[widget.selectedItemIndex]
+                                    .imageUrl),
                       ),
                     ),
                     const Text(
@@ -448,36 +473,38 @@ class _GetProductImageState extends State<_GetProductImage> {
                 ),
               ),
               //product gallery images
-              SizedBox(
-                height: 90,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: widget.productImages.length,
-                  itemBuilder: ((context, index) {
-                    return GestureDetector(
-                      onTap: () => setState(() {
-                        widget.selectedItemIndex = index;
-                      }),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 2, vertical: 2),
-                        margin: const EdgeInsets.only(left: 12),
-                        height: 90,
-                        width: 90,
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(width: 1, color: AppColors.greyColor),
-                          borderRadius: BorderRadius.circular(10),
+              if (widget.productImages.isNotEmpty) ...{
+                SizedBox(
+                  height: 90,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.productImages.length,
+                    itemBuilder: ((context, index) {
+                      return GestureDetector(
+                        onTap: () => setState(() {
+                          widget.selectedItemIndex = index;
+                        }),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 2, vertical: 2),
+                          margin: const EdgeInsets.only(left: 12),
+                          height: 90,
+                          width: 90,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: AppColors.greyColor),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ImageCachedWidget(
+                            imageUrl: widget.productImages[index].imageUrl,
+                            radius: 10,
+                          ),
                         ),
-                        child: CachedWidget(
-                          imageUrl: widget.productImages[index].imageUrl,
-                          radius: 10,
-                        ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+                  ),
                 ),
-              ),
+              }
             ],
           ),
         ),
