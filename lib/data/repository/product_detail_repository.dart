@@ -7,9 +7,8 @@ import 'package:dartz/dartz.dart';
 
 abstract class IProductDetailRepository {
   Future<Either<String, List<ProductImage>>> getImageGallery(String productId);
-  /* Future<Either<String, List<VariantTypes>>> getVariantTypes();
-  Future<Either<String, List<Variant>>> getVariants();*/
-  Future<Either<String, List<ProductVaraint>>> getProductVariants();
+  Future<Either<String, List<ProductVaraint>>> getProductVariants(
+      String productId);
 }
 
 class ProductDetailRepository extends IProductDetailRepository {
@@ -24,6 +23,19 @@ class ProductDetailRepository extends IProductDetailRepository {
       return left(e.message ?? 'Failed!');
     }
   }
+
+  @override
+  Future<Either<String, List<ProductVaraint>>> getProductVariants(
+      String productId) async {
+    try {
+      final response = await _detailDatasource.getProductVariants(productId);
+      return right(response);
+    } on ApiException catch (e) {
+      return left(e.message ?? 'Failed!');
+    }
+  }
+}
+
 
   /* @override
   Future<Either<String, List<VariantTypes>>> getVariantTypes() async {
@@ -44,14 +56,5 @@ class ProductDetailRepository extends IProductDetailRepository {
       return left(e.message ?? 'Failed!');
     }
   }*/
-
-  @override
-  Future<Either<String, List<ProductVaraint>>> getProductVariants() async {
-    try {
-      final response = await _detailDatasource.getProductVariants();
-      return right(response);
-    } on ApiException catch (e) {
-      return left(e.message ?? 'Failed!');
-    }
-  }
-}
+    /* Future<Either<String, List<VariantTypes>>> getVariantTypes();
+  Future<Either<String, List<Variant>>> getVariants();*/

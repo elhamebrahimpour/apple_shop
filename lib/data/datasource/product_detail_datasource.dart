@@ -9,8 +9,8 @@ import 'package:dio/dio.dart';
 abstract class IProductDetailDatasource {
   Future<List<ProductImage>> getImageGallery(String productId);
   Future<List<VariantTypes>> getVariantTypes();
-  Future<List<Variant>> getVariants();
-  Future<List<ProductVaraint>> getProductVariants();
+  Future<List<Variant>> getVariants(String productId);
+  Future<List<ProductVaraint>> getProductVariants(String productId);
 }
 
 class ProductDetailRemoteDatasource extends IProductDetailDatasource {
@@ -46,9 +46,11 @@ class ProductDetailRemoteDatasource extends IProductDetailDatasource {
   }
 
   @override
-  Future<List<Variant>> getVariants() async {
+  Future<List<Variant>> getVariants(String productId) async {
     try {
-      final response = await _dio.get('collections/variants/records');
+      Map<String, String> queryParams = {'filter': 'product_id="$productId"'};
+      final response = await _dio.get('collections/variants/records',
+          queryParameters: queryParams);
       return response.data['items']
           .map<Variant>((jsonObject) => Variant.fromJson(jsonObject))
           .toList();
@@ -60,9 +62,9 @@ class ProductDetailRemoteDatasource extends IProductDetailDatasource {
   }
 
   @override
-  Future<List<ProductVaraint>> getProductVariants() async {
+  Future<List<ProductVaraint>> getProductVariants(String productId) async {
     List<VariantTypes> variantTypesList = await getVariantTypes();
-    List<Variant> variantList = await getVariants();
+    List<Variant> variantList = await getVariants(productId);
 
     List<ProductVaraint> productVariantList = [];
     try {

@@ -4,9 +4,11 @@ import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
+import 'package:apple_shop/data/model/variant_types.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../data/model/variant.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   Product product;
@@ -50,8 +52,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       child: SingleProductAppbar(),
                     ),
                     //get product name
-                    const _GetProductName(),
-                    //get product image
+                    const SingleProductName(),
+                    //get product images from gallery
                     if (state is ProductDetailResponseState) ...{
                       state.productImages.fold(
                         (exception) => SliverToBoxAdapter(
@@ -59,31 +61,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             child: Text(exception),
                           ),
                         ),
-                        (productImages) => _GetProductImage(
+                        (productImages) => SingleProductImage(
                             productImages, widget.product.thumbnail),
                       )
                     },
-                    //get product color
+                    //get product variants
                     if (state is ProductDetailResponseState) ...{
-                      state.productVariants.fold((exception) {
-                        return SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(exception),
-                          ),
-                        );
-                      }, (productVariantList) {
-                        for (var typeObject in productVariantList) {
-                          print(typeObject.variantTypes.title);
-
-                          for (var variantObject in typeObject.variantList) {
-                            print(variantObject.name);
-                          }
-                        }
-                        return _GetProductColor(productVariantList);
-                      })
+                      state.productVariants.fold(
+                        (exception) {
+                          return SliverToBoxAdapter(
+                            child: Center(
+                              child: Text(exception),
+                            ),
+                          );
+                        },
+                        (productVariantList) {
+                          return VariantContainerGenerator(productVariantList);
+                        },
+                      )
                     },
-                    //get product memory
-                    const _GetProductMemory(),
                     //get product properties
                     const _GetProductProperties(),
                     //get product descryption
@@ -111,6 +107,137 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         );
       },
+    );
+  }
+}
+
+//this class generates product variant container
+class VariantContainerGenerator extends StatelessWidget {
+  final List<ProductVaraint> productVariantList;
+  const VariantContainerGenerator(this.productVariantList, {Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Column(
+        children: [
+          for (var currentProductVaraint in productVariantList) ...{
+            if (currentProductVaraint.variantList.isNotEmpty) ...{
+              VariantContainerChildGenerator(
+                  productVariant: currentProductVaraint),
+            }
+          }
+        ],
+      ),
+    );
+  }
+}
+
+//this class generates and shows variantList according to its variantType
+class VariantContainerChildGenerator extends StatelessWidget {
+  const VariantContainerChildGenerator({Key? key, required this.productVariant})
+      : super(key: key);
+
+  final ProductVaraint productVariant;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 22),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            productVariant.variantTypes.title,
+            style: const TextStyle(
+              color: AppColors.blackColor,
+              fontFamily: 'sb',
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          if (productVariant.variantTypes.type == VariantTypesEnum.color) ...{
+            ColorVariantWidget(productVariant.variantList),
+          },
+          if (productVariant.variantTypes.type == VariantTypesEnum.storage) ...{
+            StorageVariantWidget(productVariant.variantList),
+          },
+          const SizedBox(
+            height: 12,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//this class use to create storageVariant ui as well as show storage data
+class StorageVariantWidget extends StatelessWidget {
+  final List<Variant> storageVariants;
+
+  const StorageVariantWidget(this.storageVariants, {Key? key})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 30,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: storageVariants.length,
+        itemBuilder: ((context, index) => Container(
+              margin: const EdgeInsets.only(left: 12),
+              width: 60,
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(width: 2, color: AppColors.blueColor),
+              ),
+              child: Center(
+                child: Text(
+                  storageVariants[index].value,
+                  style: const TextStyle(
+                    color: AppColors.blackColor,
+                    fontFamily: 'sb',
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            )),
+      ),
+    );
+  }
+}
+
+//this class use to create colorVariant ui as well as show color data
+class ColorVariantWidget extends StatelessWidget {
+  final List<Variant> colorVariants;
+  const ColorVariantWidget(this.colorVariants, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 20,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: colorVariants.length,
+        itemBuilder: ((context, index) {
+          int hexColor =
+              int.parse('ff${colorVariants[index].value}', radix: 16);
+          return Container(
+            margin: const EdgeInsets.only(left: 12),
+            height: 20,
+            width: 20,
+            decoration: BoxDecoration(
+              color: Color(hexColor),
+              borderRadius: BorderRadius.circular(6),
+            ),
+          );
+        }),
+      ),
     );
   }
 }
@@ -304,128 +431,20 @@ class _GetProductProperties extends StatelessWidget {
   }
 }
 
-class _GetProductMemory extends StatelessWidget {
-  const _GetProductMemory({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(right: 22),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 12,
-            ),
-            const Text(
-              'انتخاب حافظه داخلی',
-              style: TextStyle(
-                color: AppColors.blackColor,
-                fontFamily: 'sb',
-                fontSize: 12,
-              ),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            SizedBox(
-              height: 30,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 3,
-                itemBuilder: ((context, index) => Container(
-                      margin: const EdgeInsets.only(left: 12),
-                      width: 60,
-                      decoration: BoxDecoration(
-                        color: AppColors.whiteColor,
-                        borderRadius: BorderRadius.circular(8),
-                        border:
-                            Border.all(width: 2, color: AppColors.blueColor),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          '512',
-                          style: TextStyle(
-                            color: AppColors.blackColor,
-                            fontFamily: 'sb',
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    )),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GetProductColor extends StatelessWidget {
-  List<ProductVaraint> productVaraint;
-  _GetProductColor(
-    this.productVaraint, {
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(right: 22),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              productVaraint[0].variantTypes.title,
-              style: const TextStyle(
-                color: AppColors.blackColor,
-                fontFamily: 'sb',
-                fontSize: 12,
-              ),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
-            SizedBox(
-              height: 20,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 3,
-                itemBuilder: ((context, index) => Container(
-                      margin: const EdgeInsets.only(left: 12),
-                      height: 20,
-                      width: 20,
-                      decoration: BoxDecoration(
-                        color: AppColors.redColor,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    )),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GetProductImage extends StatefulWidget {
+//this class shows product images
+class SingleProductImage extends StatefulWidget {
   List<ProductImage> productImages;
   String defaultProductImageUrl;
   int selectedItemIndex = 0;
-  _GetProductImage(this.productImages, this.defaultProductImageUrl, {Key? key})
+  SingleProductImage(this.productImages, this.defaultProductImageUrl,
+      {Key? key})
       : super(key: key);
 
   @override
-  State<_GetProductImage> createState() => _GetProductImageState();
+  State<SingleProductImage> createState() => _SingleProductImageState();
 }
 
-class _GetProductImageState extends State<_GetProductImage> {
+class _SingleProductImageState extends State<SingleProductImage> {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -513,8 +532,8 @@ class _GetProductImageState extends State<_GetProductImage> {
   }
 }
 
-class _GetProductName extends StatelessWidget {
-  const _GetProductName({
+class SingleProductName extends StatelessWidget {
+  const SingleProductName({
     Key? key,
   }) : super(key: key);
 
