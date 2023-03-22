@@ -1,6 +1,7 @@
 import 'dart:ui';
-import 'package:apple_shop/bloc/product/product_bloc.dart';
+import 'package:apple_shop/bloc/product_details/product_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
@@ -22,8 +23,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ProductBloc>(context)
-        .add(ProductDetailInitialized(widget.product.id));
+    BlocProvider.of<ProductBloc>(context).add(
+        ProductDetailInitialized(widget.product.id, widget.product.categoryId));
   }
 
   @override
@@ -47,12 +48,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
                     ),
                   } else ...{
-                    //get appbar
-                    const SliverToBoxAdapter(
-                      child: SingleProductAppbar(),
-                    ),
+                    //get single product appbar
+                    if (state is ProductDetailResponseState) ...{
+                      state.productCategory.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (productCatgeory) =>
+                            SingleProductAppbar(productCatgeory),
+                      ),
+                    },
                     //get product name
-                    const SingleProductName(),
+                    SingleProductName(widget.product.name),
                     //get product images from gallery
                     if (state is ProductDetailResponseState) ...{
                       state.productImages.fold(
@@ -175,34 +184,50 @@ class VariantContainerChildGenerator extends StatelessWidget {
 }
 
 //this class use to create storageVariant ui as well as show storage data
-class StorageVariantWidget extends StatelessWidget {
+class StorageVariantWidget extends StatefulWidget {
   final List<Variant> storageVariants;
 
   const StorageVariantWidget(this.storageVariants, {Key? key})
       : super(key: key);
 
   @override
+  State<StorageVariantWidget> createState() => _StorageVariantWidgetState();
+}
+
+class _StorageVariantWidgetState extends State<StorageVariantWidget> {
+  int _selectedItemIndex = 0;
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 30,
+      height: 28,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: storageVariants.length,
-        itemBuilder: ((context, index) => Container(
-              margin: const EdgeInsets.only(left: 12),
-              width: 60,
-              decoration: BoxDecoration(
-                color: AppColors.whiteColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(width: 2, color: AppColors.blueColor),
-              ),
-              child: Center(
-                child: Text(
-                  storageVariants[index].value,
-                  style: const TextStyle(
-                    color: AppColors.blackColor,
-                    fontFamily: 'sb',
-                    fontSize: 12,
+        itemCount: widget.storageVariants.length,
+        itemBuilder: ((context, index) => GestureDetector(
+              onTap: () => setState(() {
+                _selectedItemIndex = index;
+              }),
+              child: Container(
+                margin: const EdgeInsets.only(left: 12),
+                width: 60,
+                decoration: BoxDecoration(
+                  color: AppColors.whiteColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    width: _selectedItemIndex == index ? 2 : 1,
+                    color: _selectedItemIndex == index
+                        ? AppColors.blueColor
+                        : AppColors.greyColor,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    widget.storageVariants[index].value,
+                    style: const TextStyle(
+                      color: AppColors.blackColor,
+                      fontFamily: 'sb',
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ),
@@ -213,27 +238,47 @@ class StorageVariantWidget extends StatelessWidget {
 }
 
 //this class use to create colorVariant ui as well as show color data
-class ColorVariantWidget extends StatelessWidget {
+class ColorVariantWidget extends StatefulWidget {
   final List<Variant> colorVariants;
   const ColorVariantWidget(this.colorVariants, {Key? key}) : super(key: key);
 
+  @override
+  State<ColorVariantWidget> createState() => _ColorVariantWidgetState();
+}
+
+class _ColorVariantWidgetState extends State<ColorVariantWidget> {
+  double containerWidth = 24;
+  int selectedItemIndex = 0;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 20,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: colorVariants.length,
+        itemCount: widget.colorVariants.length,
         itemBuilder: ((context, index) {
           int hexColor =
-              int.parse('ff${colorVariants[index].value}', radix: 16);
-          return Container(
-            margin: const EdgeInsets.only(left: 12),
-            height: 20,
-            width: 20,
-            decoration: BoxDecoration(
-              color: Color(hexColor),
-              borderRadius: BorderRadius.circular(6),
+              int.parse('ff${widget.colorVariants[index].value}', radix: 16);
+          return GestureDetector(
+            onTap: () => setState(() {
+              selectedItemIndex = index;
+            }),
+            child: Container(
+              margin: const EdgeInsets.only(left: 12),
+              width: selectedItemIndex == index
+                  ? containerWidth + 12
+                  : containerWidth,
+              decoration: BoxDecoration(
+                color: Color(hexColor),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  strokeAlign: StrokeAlign.outside,
+                  color: selectedItemIndex == index
+                      ? AppColors.whiteColor
+                      : AppColors.blueColor,
+                  width: selectedItemIndex == index ? 2.25 : 1.25,
+                ),
+              ),
             ),
           );
         }),
@@ -533,17 +578,16 @@ class _SingleProductImageState extends State<SingleProductImage> {
 }
 
 class SingleProductName extends StatelessWidget {
-  const SingleProductName({
-    Key? key,
-  }) : super(key: key);
+  String productName;
+  SingleProductName(this.productName, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const SliverToBoxAdapter(
+    return SliverToBoxAdapter(
       child: Text(
-        'آیفون 13 پرومکس',
+        productName,
         textAlign: TextAlign.center,
-        style: TextStyle(
+        style: const TextStyle(
           color: AppColors.blackColor,
           fontFamily: 'sb',
           fontSize: 16,
@@ -686,35 +730,38 @@ class AddToCartButton extends StatelessWidget {
 }
 
 class SingleProductAppbar extends StatelessWidget {
-  const SingleProductAppbar({Key? key}) : super(key: key);
+  Category productCategory;
+  SingleProductAppbar(this.productCategory, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 22, left: 22, bottom: 26, top: 6),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        height: 46,
-        decoration: BoxDecoration(
-          color: AppColors.whiteColor,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Row(
-          children: [
-            Image.asset('images/icon_back.png'),
-            const Expanded(
-              child: Text(
-                'آیفون',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: AppColors.blueColor,
-                  fontFamily: 'sb',
-                  fontSize: 16,
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(right: 22, left: 22, bottom: 26, top: 6),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          height: 46,
+          decoration: BoxDecoration(
+            color: AppColors.whiteColor,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Row(
+            children: [
+              Image.asset('images/icon_back.png'),
+              Expanded(
+                child: Text(
+                  productCategory.title!,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: AppColors.blueColor,
+                    fontFamily: 'sb',
+                    fontSize: 16,
+                  ),
                 ),
               ),
-            ),
-            Image.asset('images/icon_apple_blue.png'),
-          ],
+              Image.asset('images/icon_apple_blue.png'),
+            ],
+          ),
         ),
       ),
     );

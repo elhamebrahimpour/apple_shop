@@ -1,5 +1,5 @@
 class Product {
-  String category;
+  String categoryId;
   String collectionId;
   String id;
   String name;
@@ -13,7 +13,7 @@ class Product {
   num? percent;
 
   Product(
-    this.category,
+    this.categoryId,
     this.collectionId,
     this.id,
     this.name,

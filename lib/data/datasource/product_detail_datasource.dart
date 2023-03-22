@@ -1,3 +1,4 @@
+import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/data/model/variant.dart';
@@ -11,6 +12,7 @@ abstract class IProductDetailDatasource {
   Future<List<VariantTypes>> getVariantTypes();
   Future<List<Variant>> getVariants(String productId);
   Future<List<ProductVaraint>> getProductVariants(String productId);
+  Future<Category> getProductCatgeory(String categoryId);
 }
 
 class ProductDetailRemoteDatasource extends IProductDetailDatasource {
@@ -81,6 +83,20 @@ class ProductDetailRemoteDatasource extends IProductDetailDatasource {
       throw ApiException(e.response?.statusCode, e.response?.data['message']);
     } catch (ex) {
       throw ApiException(0, 'unknown error!');
+    }
+  }
+
+  @override
+  Future<Category> getProductCatgeory(String categoryId) async {
+    try {
+      Map<String, String> queryParam = {'filter': 'id="$categoryId"'};
+      var response = await _dio.get('collections/category/records',
+          queryParameters: queryParam);
+      return Category.fromJsonMap(response.data['items'][0]);
+    } on DioError catch (e) {
+      throw ApiException(e.response!.statusCode, e.response!.data['message']);
+    } catch (ex) {
+      throw ApiException(0, '!unknown error');
     }
   }
 }
