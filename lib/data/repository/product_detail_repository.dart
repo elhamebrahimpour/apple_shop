@@ -1,6 +1,7 @@
 import 'package:apple_shop/data/datasource/product_detail_datasource.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
+import 'package:apple_shop/data/model/product_properties.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/utils/api_exception.dart';
@@ -11,6 +12,7 @@ abstract class IProductDetailRepository {
   Future<Either<String, List<ProductVaraint>>> getProductVariants(
       String productId);
   Future<Either<String, Category>> getProductCategory(String categoryId);
+  Future<Either<String, List<Property>>> getProductProperties(String productId);
 }
 
 class ProductDetailRepository extends IProductDetailRepository {
@@ -41,6 +43,17 @@ class ProductDetailRepository extends IProductDetailRepository {
   Future<Either<String, Category>> getProductCategory(String categoryId) async {
     try {
       final response = await _detailDatasource.getProductCatgeory(categoryId);
+      return right(response);
+    } on ApiException catch (e) {
+      return left(e.message ?? 'Failed!');
+    }
+  }
+
+  @override
+  Future<Either<String, List<Property>>> getProductProperties(
+      String productId) async {
+    try {
+      final response = await _detailDatasource.getProductProperties(productId);
       return right(response);
     } on ApiException catch (e) {
       return left(e.message ?? 'Failed!');

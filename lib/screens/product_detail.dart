@@ -4,6 +4,7 @@ import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
+import 'package:apple_shop/data/model/product_properties.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/data/model/variant_types.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
@@ -90,9 +91,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       )
                     },
                     //get product properties
-                    const _GetProductProperties(),
+                    if (state is ProductDetailResponseState) ...{
+                      state.productProperties.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (productPropertiesList) =>
+                            ProductProperties(productPropertiesList),
+                      ),
+                    },
                     //get product descryption
-                    const _GetProductDescryption(),
+                    ProductDescryption(widget.product.description),
                     //get users opinion
                     const _GetUserOpinion(),
                     //price tag and add to card section
@@ -382,95 +393,174 @@ class _GetUserOpinion extends StatelessWidget {
   }
 }
 
-class _GetProductDescryption extends StatelessWidget {
-  const _GetProductDescryption({
-    Key? key,
-  }) : super(key: key);
+class ProductDescryption extends StatefulWidget {
+  String productDescrption;
+  ProductDescryption(this.productDescrption, {Key? key}) : super(key: key);
+
+  @override
+  State<ProductDescryption> createState() => _ProductDescryptionState();
+}
+
+class _ProductDescryptionState extends State<ProductDescryption> {
+  bool isClicked = false;
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.only(top: 22, left: 22, right: 22),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        height: 46,
-        decoration: BoxDecoration(
-          color: AppColors.whiteColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(width: 1, color: AppColors.greyColor),
-        ),
-        child: Row(
-          children: [
-            const Text(
-              'توضیحات محصول: ',
-              style: TextStyle(
-                color: AppColors.blackColor,
-                fontFamily: 'sb',
-                fontSize: 14,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () => setState(() {
+              isClicked = !isClicked;
+            }),
+            child: Container(
+              margin: const EdgeInsets.only(top: 22, left: 22, right: 22),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 46,
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(width: 1, color: AppColors.greyColor),
+              ),
+              child: Row(
+                children: [
+                  const Text(
+                    'توضیحات محصول:',
+                    style: TextStyle(
+                      color: AppColors.blackColor,
+                      fontFamily: 'sb',
+                      fontSize: 14,
+                    ),
+                  ),
+                  const Spacer(),
+                  const Text(
+                    'مشاهده ',
+                    style: TextStyle(
+                      color: AppColors.blueColor,
+                      fontFamily: 'sb',
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  Image.asset('images/icon_left_categroy.png')
+                ],
               ),
             ),
-            const Spacer(),
-            const Text(
-              'مشاهده ',
-              style: TextStyle(
-                color: AppColors.blueColor,
-                fontFamily: 'sb',
-                fontSize: 12,
+          ),
+          Visibility(
+            visible: isClicked,
+            child: Container(
+              margin: const EdgeInsets.only(top: 22, left: 22, right: 22),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(width: 1, color: AppColors.greyColor),
+              ),
+              child: Text(
+                widget.productDescrption,
+                textAlign: TextAlign.justify,
+                style: const TextStyle(
+                  color: AppColors.blackColor,
+                  fontFamily: 'sb',
+                  fontSize: 13,
+                  height: 2,
+                ),
               ),
             ),
-            const SizedBox(
-              width: 6,
-            ),
-            Image.asset('images/icon_left_categroy.png')
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _GetProductProperties extends StatelessWidget {
-  const _GetProductProperties({
-    Key? key,
-  }) : super(key: key);
+class ProductProperties extends StatefulWidget {
+  List<Property> productPropertiesList;
+  ProductProperties(this.productPropertiesList, {Key? key}) : super(key: key);
 
+  @override
+  State<ProductProperties> createState() => _ProductPropertiesState();
+}
+
+class _ProductPropertiesState extends State<ProductProperties> {
+  bool isClicked = false;
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.only(top: 22, left: 22, right: 22),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        height: 46,
-        decoration: BoxDecoration(
-          color: AppColors.whiteColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(width: 1, color: AppColors.greyColor),
-        ),
-        child: Row(
-          children: [
-            const Text(
-              'مشخصات فنی: ',
-              style: TextStyle(
-                color: AppColors.blackColor,
-                fontFamily: 'sb',
-                fontSize: 14,
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () => setState(() {
+              isClicked = !isClicked;
+            }),
+            child: Container(
+              margin: const EdgeInsets.only(top: 22, left: 22, right: 22),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              height: 46,
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(width: 1, color: AppColors.greyColor),
+              ),
+              child: Row(
+                children: [
+                  const Text(
+                    'مشخصات فنی: ',
+                    style: TextStyle(
+                      color: AppColors.blackColor,
+                      fontFamily: 'sb',
+                      fontSize: 14,
+                    ),
+                  ),
+                  const Spacer(),
+                  const Text(
+                    'مشاهده ',
+                    style: TextStyle(
+                      color: AppColors.blueColor,
+                      fontFamily: 'sb',
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  Image.asset('images/icon_left_categroy.png')
+                ],
               ),
             ),
-            const Spacer(),
-            const Text(
-              'مشاهده ',
-              style: TextStyle(
-                color: AppColors.blueColor,
-                fontFamily: 'sb',
-                fontSize: 12,
+          ),
+          Visibility(
+            visible: isClicked,
+            child: Container(
+              margin: const EdgeInsets.only(top: 22, left: 22, right: 22),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(width: 1, color: AppColors.greyColor),
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.productPropertiesList.length,
+                itemBuilder: ((context, index) {
+                  return Text(
+                    '${widget.productPropertiesList[index].title} : ${widget.productPropertiesList[index].value}',
+                    textAlign: TextAlign.justify,
+                    style: const TextStyle(
+                      color: AppColors.blackColor,
+                      fontFamily: 'sb',
+                      fontSize: 13,
+                      height: 2,
+                    ),
+                  );
+                }),
               ),
             ),
-            const SizedBox(
-              width: 6,
-            ),
-            Image.asset('images/icon_left_categroy.png')
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
