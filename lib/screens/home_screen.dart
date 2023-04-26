@@ -4,7 +4,7 @@ import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/screens/products_screen.dart';
 import 'package:apple_shop/widgets/banner_slider.dart';
-import 'package:apple_shop/widgets/category_items.dart';
+import 'package:apple_shop/widgets/category_item_chip.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:apple_shop/widgets/product_item.dart';
 import 'package:flutter/material.dart';
@@ -211,19 +211,10 @@ class _GetBestSellingProductsTitle extends StatelessWidget {
                   fontFamily: 'sb', color: AppColors.greyColor, fontSize: 12),
             ),
             const Spacer(),
-            InkWell(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: ((context) {
-                    return const ProductsScreen();
-                  }),
-                ),
-              ),
-              child: const Text(
-                'مشاهده همه',
-                style: TextStyle(
-                    fontFamily: 'sb', color: AppColors.blueColor, fontSize: 14),
-              ),
+            const Text(
+              'مشاهده همه',
+              style: TextStyle(
+                  fontFamily: 'sb', color: AppColors.blueColor, fontSize: 14),
             ),
             const SizedBox(
               width: 5,
@@ -249,9 +240,8 @@ class _GetCategoriesList extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemCount: categoryList.length,
           itemBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.only(right: 22),
-            child: CategoryItems(categoryList[index]),
-          ),
+              padding: const EdgeInsets.only(right: 22),
+              child: CategoryItemChip(categoryList[index])),
         ),
       ),
     );

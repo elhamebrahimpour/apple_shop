@@ -1,49 +1,81 @@
+import 'package:apple_shop/bloc/product_category/product_category_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/widgets/product_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProductsScreen extends StatelessWidget {
-  const ProductsScreen({Key? key}) : super(key: key);
+class ProductsListScreen extends StatefulWidget {
+  final Category category;
+  const ProductsListScreen(this.category, {Key? key}) : super(key: key);
+
+  @override
+  State<ProductsListScreen> createState() => _ProductsListScreenState();
+}
+
+class _ProductsListScreenState extends State<ProductsListScreen> {
+  @override
+  void initState() {
+    BlocProvider.of<ProductCategoryBloc>(context)
+        .add(ProductCategoryRequestedEvent(widget.category.id!));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backColor,
-      body: SafeArea(
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: CustomScrollView(
-            slivers: [
-              const SliverToBoxAdapter(
-                child: CustomAppBar2(),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.only(left: 22, right: 22, bottom: 44),
-                sliver: SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return const  Text('data');
-                    },
-                    childCount: 12,
+    return BlocBuilder<ProductCategoryBloc, ProductCategoryState>(
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AppColors.backColor,
+          body: SafeArea(
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: CustomAppBar2(widget.category.title!),
                   ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 30,
-                    childAspectRatio: 2 / 2.5,
-                  ),
-                ),
+                  if (state is ProductCategoryResponse) ...[
+                    state.productsByCategoryId.fold(
+                      (exception) => SliverToBoxAdapter(
+                        child: Center(
+                          child: Text(exception),
+                        ),
+                      ),
+                      (productsByCategoryId) => SliverPadding(
+                        padding: const EdgeInsets.only(
+                            left: 22, right: 22, bottom: 44),
+                        sliver: SliverGrid(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return ProductItem(productsByCategoryId[index]);
+                            },
+                            childCount: productsByCategoryId.length,
+                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 15,
+                            mainAxisSpacing: 30,
+                            childAspectRatio: 2 / 2.5,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
 class CustomAppBar2 extends StatelessWidget {
-  const CustomAppBar2({Key? key}) : super(key: key);
+  final String categoryTitle;
+  const CustomAppBar2(this.categoryTitle, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +94,11 @@ class CustomAppBar2 extends StatelessWidget {
             const SizedBox(
               width: 10,
             ),
-            const Expanded(
+            Expanded(
               child: Text(
-                'پرفروش ترین ها',
+                categoryTitle,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.blueColor,
                   fontFamily: 'sb',
                   fontSize: 16,
