@@ -171,12 +171,13 @@ class CartItem extends StatelessWidget {
                         ),
                         Wrap(
                           spacing: 12,
-                          runSpacing: 6,
-                          children: const [
-                            OptionsCheap(),
-                            OptionsCheap(),
-                            OptionsCheap(),
-                            OptionsCheap(),
+                          runSpacing: 8,
+                          children: [
+                            OptionsChip(
+                              'قرمز',
+                              color: AppColors.redColor,
+                            ),
+                            OptionsChip('حذف'),
                           ],
                         )
                       ],
@@ -229,32 +230,55 @@ class CartItem extends StatelessWidget {
   }
 }
 
-class OptionsCheap extends StatelessWidget {
-  const OptionsCheap({Key? key}) : super(key: key);
+class OptionsChip extends StatelessWidget {
+  Color? color;
+  String title;
+  OptionsChip(this.title, {Key? key, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    //int hexColor = int.parse('ff$color', radix: 16);
+
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: AppColors.greyColor.withOpacity(0.5),
+          color: Colors.grey.withOpacity(0.5),
           width: 1,
         ),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(10),
-        ),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('ذخیره'),
-            const SizedBox(
-              width: 10,
-            ),
-            Image.asset('images/icon_options.png'),
-          ],
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontFamily: 'sm',
+                  color: AppColors.blackColor,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              if (color != null) ...{
+                Container(
+                  height: 14,
+                  width: 14,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                  ),
+                )
+              } else ...{
+                Image.asset('images/icon_trash.png'),
+              }
+            ],
+          ),
         ),
       ),
     );

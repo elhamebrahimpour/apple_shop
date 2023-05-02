@@ -31,7 +31,8 @@ class _MyApplicationState extends State<MyApplication> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
+      home:  
+      Scaffold(
         body: IndexedStack(
           index: _selectedBottomNavigationItem,
           children: getLayouts(),

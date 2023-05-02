@@ -1,6 +1,8 @@
 import 'package:apple_shop/bloc/category/category_bloc.dart';
+import 'package:apple_shop/bloc/product_category/product_category_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
+import 'package:apple_shop/screens/products_screen.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +60,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     );
                   }
                   return const SliverToBoxAdapter(
-                    child: Center(child: Text('!Connection Lost')),
+                    child: Center(
+                      child: Text('!Connection Lost'),
+                    ),
                   );
                 }),
               ),
@@ -81,8 +85,18 @@ class _CategoryList extends StatelessWidget {
       sliver: SliverGrid(
         delegate: SliverChildBuilderDelegate(
           ((context, index) {
-            return ImageCachedWidget(
-              imageUrl: categoryList[index].thumbnail,
+            return GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: ((context) => BlocProvider(
+                        create: (context) => ProductCategoryBloc(),
+                        child: ProductsListScreen(categoryList[index]),
+                      )),
+                ),
+              ),
+              child: ImageCachedWidget(
+                imageUrl: categoryList[index].thumbnail,
+              ),
             );
           }),
           childCount: categoryList.length,
