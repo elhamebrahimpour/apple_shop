@@ -2,6 +2,7 @@ import 'package:apple_shop/bloc/product_category/product_category_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/screens/products_screen.dart';
+import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +13,6 @@ class CategoryItemChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int hexColor = int.parse('ff${category.color}', radix: 16);
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -34,13 +34,13 @@ class CategoryItemChip extends StatelessWidget {
                   height: 56,
                   width: 56,
                   decoration: ShapeDecoration(
-                    color: Color(hexColor),
+                    color: category.color.parseToColor(),
                     shape: ContinuousRectangleBorder(
                       borderRadius: BorderRadius.circular(46),
                     ),
                     shadows: [
                       BoxShadow(
-                        color: Color(hexColor),
+                        color: category.color.parseToColor(),
                         blurRadius: 20,
                         spreadRadius: -8,
                         offset: const Offset(0.0, 6),

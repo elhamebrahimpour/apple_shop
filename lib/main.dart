@@ -2,15 +2,20 @@ import 'dart:ui';
 import 'package:apple_shop/bloc/category/category_bloc.dart';
 import 'package:apple_shop/bloc/home/home_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/model/card_model.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/category_screen.dart';
 import 'package:apple_shop/screens/home_screen.dart';
 import 'package:apple_shop/screens/profile_screen.dart';
-import 'package:apple_shop/screens/shopping_cart_screen.dart';
+import 'package:apple_shop/screens/shopping_card_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/adapters.dart';
 
 void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(CardModelAdapter());
+  await Hive.openBox<CardModel>('cardBox');
   //add this here because sharedPref has native codes
   WidgetsFlutterBinding.ensureInitialized();
   await getItInit();
@@ -31,8 +36,7 @@ class _MyApplicationState extends State<MyApplication> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:  
-      Scaffold(
+      home: Scaffold(
         body: IndexedStack(
           index: _selectedBottomNavigationItem,
           children: getLayouts(),
@@ -45,7 +49,7 @@ class _MyApplicationState extends State<MyApplication> {
   List<Widget> getLayouts() {
     return <Widget>[
       const ProfileScreen(),
-      const ShoppingCartScreen(),
+      const ShoppingCardScreen(),
       BlocProvider(
         create: (context) => CategoryBloc(),
         child: const CategoryScreen(),

@@ -1,13 +1,19 @@
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/model/card_model.dart';
+import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 
-class ShoppingCartScreen extends StatelessWidget {
-  const ShoppingCartScreen({Key? key}) : super(key: key);
+class ShoppingCardScreen extends StatelessWidget {
+  const ShoppingCardScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var cardBox = Hive.box<CardModel>('cardBox');
+    List<CardModel> cardList = cardBox.values.toList();
     return Scaffold(
       backgroundColor: AppColors.backColor,
       body: SafeArea(
@@ -29,9 +35,9 @@ class ShoppingCartScreen extends StatelessWidget {
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
-                          return const CartItem();
+                          return CardItem(cardList[index]);
                         },
-                        childCount: 6,
+                        childCount: cardList.length,
                       ),
                     ),
                   )
@@ -69,8 +75,9 @@ class ShoppingCartScreen extends StatelessWidget {
   }
 }
 
-class CartItem extends StatelessWidget {
-  const CartItem({Key? key}) : super(key: key);
+class CardItem extends StatelessWidget {
+  CardModel cardModel;
+  CardItem(this.cardModel, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +96,10 @@ class CartItem extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
-                  child: Image.asset('images/iphone.png'),
+                  child: SizedBox(
+                      height: 120,
+                      width: 80,
+                      child: CachedNetworkImage(imageUrl: cardModel.thumbnail)),
                 ),
                 Expanded(
                   child: Padding(
@@ -98,11 +108,11 @@ class CartItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'آیفون 13 پرومکس دو سیم کارت',
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                        Text(
+                          cardModel.name,
+                          textAlign: TextAlign.start,
+                          //overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
                             color: AppColors.blackColor,
                             fontFamily: 'sb',
                             fontSize: 14,
@@ -125,9 +135,9 @@ class CartItem extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            const Text(
-                              '46.800.000',
-                              style: TextStyle(
+                            Text(
+                              cardModel.price.toString(),
+                              style: const TextStyle(
                                 fontFamily: 'sm',
                                 color: AppColors.greyColor,
                                 fontSize: 14,
@@ -152,12 +162,12 @@ class CartItem extends StatelessWidget {
                                 color: AppColors.redColor,
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 2, horizontal: 5),
                                 child: Text(
-                                  '%3',
-                                  style: TextStyle(
+                                  '%${cardModel.percent!.round()}',
+                                  style: const TextStyle(
                                       fontFamily: 'sb',
                                       color: AppColors.whiteColor,
                                       fontSize: 10),
@@ -175,7 +185,7 @@ class CartItem extends StatelessWidget {
                           children: [
                             OptionsChip(
                               'قرمز',
-                              color: AppColors.redColor,
+                              color: 'd02026',
                             ),
                             OptionsChip('حذف'),
                           ],
@@ -202,19 +212,19 @@ class CartItem extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 20, top: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
-                  '45.800.000',
-                  style: TextStyle(
+                  cardModel.realPrice.toString(),
+                  style: const TextStyle(
                     fontFamily: 'sb',
                     color: AppColors.blackColor,
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 5,
                 ),
-                Text(
+                const Text(
                   'تومان',
                   style: TextStyle(
                       fontFamily: 'sb',
@@ -231,14 +241,12 @@ class CartItem extends StatelessWidget {
 }
 
 class OptionsChip extends StatelessWidget {
-  Color? color;
+  String? color;
   String title;
   OptionsChip(this.title, {Key? key, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //int hexColor = int.parse('ff$color', radix: 16);
-
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
@@ -270,7 +278,7 @@ class OptionsChip extends StatelessWidget {
                   height: 14,
                   width: 14,
                   decoration: BoxDecoration(
-                    color: color,
+                    color: color.parseToColor(),
                     shape: BoxShape.circle,
                   ),
                 )

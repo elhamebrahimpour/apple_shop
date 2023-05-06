@@ -1,15 +1,18 @@
 import 'dart:ui';
 import 'package:apple_shop/bloc/product_details/product_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/data/model/card_model.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
 import 'package:apple_shop/data/model/product_properties.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/data/model/variant_types.dart';
+import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../data/model/variant.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -113,9 +116,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             horizontal: 22, vertical: 22),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            AddToCartButton(),
-                            ProductPriceTag(),
+                          children: [
+                            AddToCartButton(widget.product),
+                            const ProductPriceTag(),
                           ],
                         ),
                       ),
@@ -268,8 +271,6 @@ class _ColorVariantWidgetState extends State<ColorVariantWidget> {
         scrollDirection: Axis.horizontal,
         itemCount: widget.colorVariants.length,
         itemBuilder: ((context, index) {
-          int hexColor =
-              int.parse('ff${widget.colorVariants[index].value}', radix: 16);
           return GestureDetector(
             onTap: () => setState(() {
               selectedItemIndex = index;
@@ -280,7 +281,7 @@ class _ColorVariantWidgetState extends State<ColorVariantWidget> {
                   ? containerWidth + 12
                   : containerWidth,
               decoration: BoxDecoration(
-                color: Color(hexColor),
+                color: widget.colorVariants[index].value.parseToColor(),
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   strokeAlign: StrokeAlign.outside,
@@ -777,12 +778,15 @@ class ProductPriceTag extends StatelessWidget {
 }
 
 class AddToCartButton extends StatelessWidget {
-  const AddToCartButton({
+  Product product;
+  AddToCartButton(
+    this.product, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var cardBox = Hive.box<CardModel>('cardBox');
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
       children: [
@@ -794,20 +798,34 @@ class AddToCartButton extends StatelessWidget {
             color: AppColors.blueColor,
           ),
         ),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(15),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-            child: const SizedBox(
-              height: 53,
-              width: 160,
-              child: Center(
-                child: Text(
-                  'افزودن به سبد خرید',
-                  style: TextStyle(
-                    color: AppColors.whiteColor,
-                    fontFamily: 'sb',
-                    fontSize: 16,
+        GestureDetector(
+          onTap: () {
+            var card = CardModel(
+              product.categoryId,
+              product.collectionId,
+              product.id,
+              product.name,
+              product.thumbnail,
+              product.price,
+              product.discount_price,
+            );
+            cardBox.add(card);
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: const SizedBox(
+                height: 53,
+                width: 160,
+                child: Center(
+                  child: Text(
+                    'افزودن به سبد خرید',
+                    style: TextStyle(
+                      color: AppColors.whiteColor,
+                      fontFamily: 'sb',
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
