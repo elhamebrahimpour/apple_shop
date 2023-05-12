@@ -14,3 +14,5 @@ class ProductDetailResponseState extends ProductState {
   ProductDetailResponseState(this.productImages, this.productVariants,
       this.productCategory, this.productProperties);
 }
+
+class ProductCardResponseState extends ProductState {}

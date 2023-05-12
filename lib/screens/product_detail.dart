@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:apple_shop/bloc/product_details/product_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
-import 'package:apple_shop/data/model/card_model.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
@@ -12,7 +11,6 @@ import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import '../data/model/variant.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -786,7 +784,6 @@ class AddToCartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cardBox = Hive.box<CardModel>('cardBox');
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
       children: [
@@ -799,18 +796,8 @@ class AddToCartButton extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            var card = CardModel(
-              product.categoryId,
-              product.collectionId,
-              product.id,
-              product.name,
-              product.thumbnail,
-              product.price,
-              product.discount_price,
-            );
-            cardBox.add(card);
-          },
+          onTap: () => BlocProvider.of<ProductBloc>(context)
+              .add(ProductAddToCardEvent(product)),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(15),
             child: BackdropFilter(

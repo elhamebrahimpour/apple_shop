@@ -1,11 +1,13 @@
 import 'package:apple_shop/data/datasource/authentication_datasource.dart';
 import 'package:apple_shop/data/datasource/banner_datasource.dart';
+import 'package:apple_shop/data/datasource/card_datasource.dart';
 import 'package:apple_shop/data/datasource/category_datasource.dart';
 import 'package:apple_shop/data/datasource/product_category_datasource.dart';
 import 'package:apple_shop/data/datasource/product_datasource.dart';
 import 'package:apple_shop/data/datasource/product_detail_datasource.dart';
 import 'package:apple_shop/data/repository/authentication_repository.dart';
 import 'package:apple_shop/data/repository/banner_repository.dart';
+import 'package:apple_shop/data/repository/card_repository.dart';
 import 'package:apple_shop/data/repository/category_repository.dart';
 import 'package:apple_shop/data/repository/product_category_repository.dart';
 import 'package:apple_shop/data/repository/product_detail_repository.dart';
@@ -42,6 +44,9 @@ Future getItInit() async {
   serviceLocator.registerFactory<IProductCategoryDataSource>(
       () => ProductCategoryDataSource());
 
+  serviceLocator
+      .registerFactory<ICardLocalDataSource>(() => CardLocalDataSource());
+
 //app repositories
   serviceLocator.registerFactory<IAuthenticationRepository>(
       () => AuthenticationRepository());
@@ -58,4 +63,7 @@ Future getItInit() async {
 
   serviceLocator.registerFactory<IProductCategoryRepository>(
       () => ProductCategoryRepository());
+
+  serviceLocator
+      .registerFactory<ICardLocalRepository>(() => CardLocalRepository());
 }

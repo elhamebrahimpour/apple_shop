@@ -5,7 +5,7 @@ import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class ShoppingCardScreen extends StatelessWidget {
   const ShoppingCardScreen({Key? key}) : super(key: key);

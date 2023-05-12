@@ -7,3 +7,8 @@ class ProductDetailInitialized extends ProductEvent {
   String categoryId;
   ProductDetailInitialized(this.productId, this.categoryId);
 }
+
+class ProductAddToCardEvent extends ProductEvent {
+  final Product product;
+  ProductAddToCardEvent(this.product);
+}
