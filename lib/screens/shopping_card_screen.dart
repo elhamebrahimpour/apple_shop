@@ -1,3 +1,4 @@
+import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/card_model.dart';
 import 'package:apple_shop/utils/extensions/string_extension.dart';
@@ -5,72 +6,82 @@ import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ShoppingCardScreen extends StatelessWidget {
   const ShoppingCardScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var cardBox = Hive.box<CardModel>('cardBox');
-    List<CardModel> cardList = cardBox.values.toList();
-    return Scaffold(
-      backgroundColor: AppColors.backColor,
-      body: SafeArea(
-        child: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Stack(
-            alignment: AlignmentDirectional.bottomCenter,
-            children: [
-              CustomScrollView(
-                slivers: [
-                  const SliverToBoxAdapter(
-                    child: CustomAppBar(
-                      title: 'سبد خرید',
-                      searchIconVisibility: false,
-                    ),
+    return BlocBuilder<CardBloc, CardState>(
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AppColors.backColor,
+          body: SafeArea(
+            child: Directionality(
+              textDirection: TextDirection.rtl,
+              child: Stack(
+                alignment: AlignmentDirectional.bottomCenter,
+                children: [
+                  CustomScrollView(
+                    slivers: [
+                      const SliverToBoxAdapter(
+                        child: CustomAppBar(
+                          title: 'سبد خرید',
+                          searchIconVisibility: false,
+                        ),
+                      ),
+                      //fetching shopping card products from hive local D.B
+                      if (state is CardFetchDataFromHiveState) ...[
+                        state.cardList.fold(
+                          (exception) => SliverToBoxAdapter(
+                            child: Text(exception),
+                          ),
+                          (cardList) => SliverPadding(
+                            padding: const EdgeInsets.only(bottom: 80),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  return CardItem(cardList[index]);
+                                },
+                                childCount: cardList.length,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ],
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.only(bottom: 80),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return CardItem(cardList[index]);
-                        },
-                        childCount: cardList.length,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 22, vertical: 22),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 52,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.greenColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        onPressed: () {},
+                        child: const Text(
+                          'ادامه فرآیند خرید',
+                          style: TextStyle(
+                            fontFamily: 'sm',
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 52,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.greenColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: const Text(
-                      'ادامه فرآیند خرید',
-                      style: TextStyle(
-                        fontFamily: 'sm',
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

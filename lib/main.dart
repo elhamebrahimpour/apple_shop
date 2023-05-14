@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:apple_shop/bloc/category/category_bloc.dart';
 import 'package:apple_shop/bloc/home/home_bloc.dart';
+import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/card_model.dart';
 import 'package:apple_shop/di/api_di.dart';
@@ -49,7 +50,10 @@ class _MyApplicationState extends State<MyApplication> {
   List<Widget> getLayouts() {
     return <Widget>[
       const ProfileScreen(),
-      const ShoppingCardScreen(),
+      BlocProvider(
+        create: (context) => CardBloc()..add(CardFetchedDataFromHiveEvent()),
+        child: const ShoppingCardScreen(),
+      ),
       BlocProvider(
         create: (context) => CategoryBloc(),
         child: const CategoryScreen(),

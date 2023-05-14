@@ -5,6 +5,8 @@ import 'package:dartz/dartz.dart';
 
 abstract class ICardLocalRepository {
   Future<Either<String, String>> addProductToCard(CardModel cardModel);
+
+  Future<Either<String, List<CardModel>>> getAllCardProducts();
 }
 
 class CardLocalRepository extends ICardLocalRepository {
@@ -16,7 +18,17 @@ class CardLocalRepository extends ICardLocalRepository {
       await _localDataSource.addProductToCard(cardModel);
       return right('به سبد خرید شما افزوده شد.');
     } catch (ex) {
-      return left(ex.toString());
+      return left('خطا در افزودن به سبد خرید!');
+    }
+  }
+
+  @override
+  Future<Either<String, List<CardModel>>> getAllCardProducts() async {
+    try {
+      final cardList = await _localDataSource.getAllCardProducts();
+      return (right(cardList));
+    } catch (ex) {
+      return left('خطا در نمایش سبد خرید شما!');
     }
   }
 }
