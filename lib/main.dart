@@ -51,7 +51,10 @@ class _MyApplicationState extends State<MyApplication> {
     return <Widget>[
       const ProfileScreen(),
       BlocProvider(
-        create: (context) => CardBloc()..add(CardFetchedDataFromHiveEvent()),
+        create: (context) => serviceLocator.get<CardBloc>()
+          ..add(
+            CardFetchedDataFromHiveEvent(),
+          ),
         child: const ShoppingCardScreen(),
       ),
       BlocProvider(

@@ -2,7 +2,6 @@ import 'package:apple_shop/bloc/home/home_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
-import 'package:apple_shop/screens/products_screen.dart';
 import 'package:apple_shop/widgets/banner_slider.dart';
 import 'package:apple_shop/widgets/category_item_chip.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';

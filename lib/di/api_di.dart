@@ -1,3 +1,4 @@
+import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/data/datasource/authentication_datasource.dart';
 import 'package:apple_shop/data/datasource/banner_datasource.dart';
 import 'package:apple_shop/data/datasource/card_datasource.dart';
@@ -66,4 +67,7 @@ Future getItInit() async {
 
   serviceLocator
       .registerFactory<ICardLocalRepository>(() => CardLocalRepository());
+
+  //bloc registraions
+  serviceLocator.registerSingleton<CardBloc>(CardBloc());
 }

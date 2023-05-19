@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:apple_shop/bloc/product_details/product_bloc.dart';
+import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
@@ -23,111 +24,112 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<ProductBloc>(context).add(
-        ProductDetailInitialized(widget.product.id, widget.product.categoryId));
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProductBloc, ProductState>(
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: AppColors.backColor,
-          body: SafeArea(
-            child: Directionality(
-              textDirection: TextDirection.rtl,
-              child: CustomScrollView(
-                slivers: [
-                  if (state is ProductDetailLoadingState) ...{
-                    const SliverToBoxAdapter(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.blueColor,
-                          strokeWidth: 4,
-                        ),
-                      ),
-                    ),
-                  } else ...{
-                    //get single product appbar
-                    if (state is ProductDetailResponseState) ...{
-                      state.productCategory.fold(
-                        (exception) => SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(exception),
+    return BlocProvider(
+      create: (context) => ProductBloc()
+        ..add(
+          ProductDetailInitialized(
+              widget.product.id, widget.product.categoryId),
+        ),
+      child: BlocBuilder<ProductBloc, ProductState>(
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: AppColors.backColor,
+            body: SafeArea(
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: CustomScrollView(
+                  slivers: [
+                    if (state is ProductDetailLoadingState) ...{
+                      const SliverToBoxAdapter(
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.blueColor,
+                            strokeWidth: 4,
                           ),
                         ),
-                        (productCatgeory) =>
-                            SingleProductAppbar(productCatgeory),
                       ),
-                    },
-                    //get product name
-                    SingleProductName(widget.product.name),
-                    //get product images from gallery
-                    if (state is ProductDetailResponseState) ...{
-                      state.productImages.fold(
-                        (exception) => SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(exception),
-                          ),
-                        ),
-                        (productImages) => SingleProductImage(
-                            productImages, widget.product.thumbnail),
-                      )
-                    },
-                    //get product variants
-                    if (state is ProductDetailResponseState) ...{
-                      state.productVariants.fold(
-                        (exception) {
-                          return SliverToBoxAdapter(
+                    } else ...{
+                      //get single product appbar
+                      if (state is ProductDetailResponseState) ...{
+                        state.productCategory.fold(
+                          (exception) => SliverToBoxAdapter(
                             child: Center(
                               child: Text(exception),
                             ),
-                          );
-                        },
-                        (productVariantList) {
-                          return VariantContainerGenerator(productVariantList);
-                        },
-                      )
-                    },
-                    //get product properties
-                    if (state is ProductDetailResponseState) ...{
-                      state.productProperties.fold(
-                        (exception) => SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(exception),
+                          ),
+                          (productCatgeory) =>
+                              SingleProductAppbar(productCatgeory),
+                        ),
+                      },
+                      //get product name
+                      SingleProductName(widget.product.name),
+                      //get product images from gallery
+                      if (state is ProductDetailResponseState) ...{
+                        state.productImages.fold(
+                          (exception) => SliverToBoxAdapter(
+                            child: Center(
+                              child: Text(exception),
+                            ),
+                          ),
+                          (productImages) => SingleProductImage(
+                              productImages, widget.product.thumbnail),
+                        )
+                      },
+                      //get product variants
+                      if (state is ProductDetailResponseState) ...{
+                        state.productVariants.fold(
+                          (exception) {
+                            return SliverToBoxAdapter(
+                              child: Center(
+                                child: Text(exception),
+                              ),
+                            );
+                          },
+                          (productVariantList) {
+                            return VariantContainerGenerator(
+                                productVariantList);
+                          },
+                        )
+                      },
+                      //get product properties
+                      if (state is ProductDetailResponseState) ...{
+                        state.productProperties.fold(
+                          (exception) => SliverToBoxAdapter(
+                            child: Center(
+                              child: Text(exception),
+                            ),
+                          ),
+                          (productPropertiesList) =>
+                              ProductProperties(productPropertiesList),
+                        ),
+                      },
+                      //get product descryption
+                      ProductDescryption(widget.product.description),
+                      //get users opinion
+                      const _GetUserOpinion(),
+                      //price tag and add to card section
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 22, vertical: 22),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              AddToCartButton(widget.product),
+                              const ProductPriceTag(),
+                            ],
                           ),
                         ),
-                        (productPropertiesList) =>
-                            ProductProperties(productPropertiesList),
                       ),
-                    },
-                    //get product descryption
-                    ProductDescryption(widget.product.description),
-                    //get users opinion
-                    const _GetUserOpinion(),
-                    //price tag and add to card section
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 22, vertical: 22),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            AddToCartButton(widget.product),
-                            const ProductPriceTag(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  }
-                ],
+                    }
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
@@ -796,8 +798,14 @@ class AddToCartButton extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () => BlocProvider.of<ProductBloc>(context)
-              .add(ProductAddToCardEvent(product)),
+          onTap: () {
+            BlocProvider.of<ProductBloc>(context)
+                .add(ProductAddToCardEvent(product));
+                //use this event call to inform shoppingCard
+                //new product added to you update your list in screen
+            BlocProvider.of<CardBloc>(context)
+                .add(CardFetchedDataFromHiveEvent());
+          },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(15),
             child: BackdropFilter(
