@@ -14,7 +14,9 @@ class CardBloc extends Bloc<CardEvent, CardState> {
   CardBloc() : super(CardInitialState()) {
     on<CardFetchedDataFromHiveEvent>((event, emit) async {
       final cardList = await _localRepository.getAllCardProducts();
-      emit(CardFetchDataFromHiveState(cardList));
+      final finalPrice = await _localRepository.getShoppingCardFinalPrice();
+
+      emit(CardFetchDataFromHiveState(cardList, finalPrice));
     });
   }
 }

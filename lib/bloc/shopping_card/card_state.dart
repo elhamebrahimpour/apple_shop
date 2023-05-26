@@ -7,5 +7,6 @@ class CardInitialState extends CardState {}
 
 class CardFetchDataFromHiveState extends CardState {
   Either<String, List<CardModel>> cardList;
-  CardFetchDataFromHiveState(this.cardList);
+  int? finalPrice;
+  CardFetchDataFromHiveState(this.cardList, this.finalPrice);
 }

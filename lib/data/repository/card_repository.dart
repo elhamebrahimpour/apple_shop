@@ -7,6 +7,8 @@ abstract class ICardLocalRepository {
   Future<Either<String, String>> addProductToCard(CardModel cardModel);
 
   Future<Either<String, List<CardModel>>> getAllCardProducts();
+
+  Future<int> getShoppingCardFinalPrice();
 }
 
 class CardLocalRepository extends ICardLocalRepository {
@@ -30,5 +32,10 @@ class CardLocalRepository extends ICardLocalRepository {
     } catch (ex) {
       return left('خطا در نمایش سبد خرید شما!');
     }
+  }
+
+  @override
+  Future<int> getShoppingCardFinalPrice() async {
+    return await _localDataSource.getShoppingCardFinalPrice();
   }
 }

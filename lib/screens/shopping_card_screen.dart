@@ -37,45 +37,65 @@ class ShoppingCardScreen extends StatelessWidget {
                           (exception) => SliverToBoxAdapter(
                             child: Text(exception),
                           ),
-                          (cardList) => SliverPadding(
-                            padding: const EdgeInsets.only(bottom: 80),
-                            sliver: SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  return CardItem(cardList[index]);
-                                },
-                                childCount: cardList.length,
-                              ),
-                            ),
-                          ),
+                          (cardList) => cardList.isEmpty
+                              ? SliverPadding(
+                                  padding: EdgeInsets.only(
+                                    top: MediaQuery.of(context).size.height / 3,
+                                  ),
+                                  sliver: const SliverToBoxAdapter(
+                                    child: Center(
+                                      child: Text(
+                                        'سبد خرید شما خالی می‌باشد.',
+                                        style: TextStyle(
+                                          fontFamily: 'sm',
+                                          fontSize: 18,
+                                          color: AppColors.greyColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : SliverPadding(
+                                  padding: const EdgeInsets.only(bottom: 80),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (context, index) {
+                                        return CardItem(cardList[index]);
+                                      },
+                                      childCount: cardList.length,
+                                    ),
+                                  ),
+                                ),
                         )
                       ],
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 22, vertical: 22),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 52,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.greenColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                  if (state is CardFetchDataFromHiveState) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 22, vertical: 22),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 52,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.greenColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
                           ),
-                        ),
-                        onPressed: () {},
-                        child: const Text(
-                          'ادامه فرآیند خرید',
-                          style: TextStyle(
-                            fontFamily: 'sm',
-                            fontSize: 18,
+                          onPressed: () {},
+                          child: Text(
+                            'قابل پرداخت: ${state.finalPrice}',
+                            style: const TextStyle(
+                              fontFamily: 'sm',
+                              fontSize: 18,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),

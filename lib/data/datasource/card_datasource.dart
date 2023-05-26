@@ -2,9 +2,14 @@ import 'package:apple_shop/data/model/card_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 abstract class ICardLocalDataSource {
+  //add product to your shopping card
   Future<void> addProductToCard(CardModel cardModel);
 
+  //get all card products from local database
   Future<List<CardModel>> getAllCardProducts();
+
+  //calculate shopping card final price to pay
+  Future<int> getShoppingCardFinalPrice();
 }
 
 class CardLocalDataSource extends ICardLocalDataSource {
@@ -17,5 +22,14 @@ class CardLocalDataSource extends ICardLocalDataSource {
   @override
   Future<List<CardModel>> getAllCardProducts() async {
     return cardBox.values.toList();
+  }
+
+  @override
+  Future<int> getShoppingCardFinalPrice() async {
+    var finalPrice = cardBox.values.toList().fold(
+          0,
+          (accumulator, cardModel) => accumulator + (cardModel.realPrice!),
+        );
+    return finalPrice;
   }
 }
