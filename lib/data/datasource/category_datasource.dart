@@ -16,6 +16,7 @@ class CategoryRemoteDatasource extends ICategoryDatasource {
       return response.data['items']
           .map<Category>((jsonObject) => Category.fromJsonMap(jsonObject))
           .toList();
+    // ignore: deprecated_member_use
     } on DioError catch (e) {
       throw ApiException(e.response!.statusCode, e.response!.data['message']);
     } catch (ex) {

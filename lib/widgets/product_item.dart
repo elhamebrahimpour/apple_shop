@@ -1,4 +1,3 @@
-import 'package:apple_shop/bloc/product_details/product_bloc.dart';
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/product.dart';

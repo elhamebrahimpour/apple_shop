@@ -14,8 +14,11 @@ class BannerRemoteDatasource extends IBannerDatasource {
     try {
       var response = await _dio.get('collections/banner/records');
       return response.data['items']
-          .map<AdvertiseBanner>((jsonObject) => AdvertiseBanner.fromJson(jsonObject))
+          .map<AdvertiseBanner>(
+              (jsonObject) => AdvertiseBanner.fromJson(jsonObject))
           .toList();
+
+      // ignore: deprecated_member_use
     } on DioError catch (e) {
       throw ApiException(e.response!.statusCode, e.response!.data['message']);
     } catch (ex) {

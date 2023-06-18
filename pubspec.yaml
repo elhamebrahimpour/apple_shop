@@ -12,7 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   smooth_page_indicator: ^1.0.0+2
   dotted_line: ^3.1.0
-  dio: ^4.0.6
+  dio: ^5.1.2
   dartz: ^0.10.1
   get_it: ^7.2.0
   shared_preferences: ^2.0.15
@@ -21,8 +21,10 @@ dependencies:
   cached_network_image: ^3.2.3
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  intl: ^0.18.1
-
+  zarinpal: ^1.0.5
+  url_launcher: ^6.1.11
+  uni_links: ^0.5.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

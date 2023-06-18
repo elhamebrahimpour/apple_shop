@@ -33,7 +33,7 @@ class RegisterScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                var either = await AuthenticationRepository()
+                await AuthenticationRepository()
                     .loginUser('hamid', '12345678');
                 //either.fold((errorMessage) => print(errorMessage),(responseMessage) => print(responseMessage));
                 //AuthManager.readUsername();

@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/card_model.dart';
@@ -7,9 +9,28 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:zarinpal/zarinpal.dart';
 
-class ShoppingCardScreen extends StatelessWidget {
+class ShoppingCardScreen extends StatefulWidget {
   const ShoppingCardScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ShoppingCardScreen> createState() => _ShoppingCardScreenState();
+}
+
+class _ShoppingCardScreenState extends State<ShoppingCardScreen> {
+  final PaymentRequest _paymentRequest = PaymentRequest();
+
+  @override
+  void initState() {
+    super.initState();
+    _paymentRequest.setIsSandBox(true);
+    _paymentRequest.setAmount(1000);
+    _paymentRequest.setDescription('it is my first payment request!');
+    _paymentRequest.setMerchantID('d645fba8-1b29-11ea-be59-000c295eb8fc');
+    _paymentRequest.setCallbackURL('expertflutter://shop');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +105,15 @@ class ShoppingCardScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            ZarinPal().startPayment(_paymentRequest,
+                                (status, paymentGatewayUri) {
+                              if (status == 100) {
+                                launchUrl(Uri.parse(paymentGatewayUri!),
+                                    mode: LaunchMode.externalApplication);
+                              }
+                            });
+                          },
                           child: Text(
                             'قابل پرداخت: ${state.finalPrice}',
                             style: const TextStyle(

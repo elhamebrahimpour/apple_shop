@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:ui';
 import 'package:apple_shop/bloc/product_details/product_bloc.dart';
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
@@ -284,7 +286,7 @@ class _ColorVariantWidgetState extends State<ColorVariantWidget> {
                 color: widget.colorVariants[index].value.parseToColor(),
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
-                  strokeAlign: StrokeAlign.outside,
+                  strokeAlign: BorderSide.strokeAlignOutside,
                   color: selectedItemIndex == index
                       ? AppColors.whiteColor
                       : AppColors.blueColor,
@@ -801,8 +803,8 @@ class AddToCartButton extends StatelessWidget {
           onTap: () {
             BlocProvider.of<ProductBloc>(context)
                 .add(ProductAddToCardEvent(product));
-                //use this event call to inform shoppingCard
-                //new product added to you update your list in screen
+            //use this event call to inform shoppingCard
+            //new product added to you update your list in screen
             BlocProvider.of<CardBloc>(context)
                 .add(CardFetchedDataFromHiveEvent());
           },
