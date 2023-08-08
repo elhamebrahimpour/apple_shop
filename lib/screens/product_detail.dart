@@ -10,6 +10,7 @@ import 'package:apple_shop/data/model/product_gallery_image.dart';
 import 'package:apple_shop/data/model/product_properties.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/data/model/variant_types.dart';
+import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
@@ -28,11 +29,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProductBloc()
-        ..add(
-          ProductDetailInitialized(
-              widget.product.id, widget.product.categoryId),
-        ),
+      create: (context) =>
+          ProductBloc(serviceLocator.get(), serviceLocator.get())
+            ..add(
+              ProductDetailInitialized(
+                  widget.product.id, widget.product.categoryId),
+            ),
       child: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
           return Scaffold(

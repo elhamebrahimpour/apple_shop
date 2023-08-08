@@ -58,11 +58,17 @@ class _MyApplicationState extends State<MyApplication> {
         child: const ShoppingCardScreen(),
       ),
       BlocProvider(
-        create: (context) => CategoryBloc(),
+        create: (context) => CategoryBloc(
+          serviceLocator.get(),
+        ),
         child: const CategoryScreen(),
       ),
       BlocProvider(
-        create: (context) => HomeBloc(),
+        create: (context) => HomeBloc(
+          serviceLocator.get(),
+          serviceLocator.get(),
+          serviceLocator.get(),
+        ),
         child: const HomeScreen(),
       ),
     ];

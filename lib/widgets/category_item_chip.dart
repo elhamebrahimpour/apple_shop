@@ -1,6 +1,7 @@
 import 'package:apple_shop/bloc/product_category/product_category_bloc.dart';
 import 'package:apple_shop/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
+import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/products_screen.dart';
 import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
@@ -17,7 +18,7 @@ class CategoryItemChip extends StatelessWidget {
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
           builder: ((context) => BlocProvider(
-                create: (context) => ProductCategoryBloc(),
+                create: (context) => ProductCategoryBloc(serviceLocator.get()),
                 child: ProductsListScreen(category),
               )),
         ),

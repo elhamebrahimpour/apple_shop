@@ -6,7 +6,6 @@ import 'package:apple_shop/data/model/product_properties.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/data/repository/card_repository.dart';
 import 'package:apple_shop/data/repository/product_detail_repository.dart';
-import 'package:apple_shop/di/api_di.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 
@@ -14,10 +13,11 @@ part 'product_event.dart';
 part 'product_state.dart';
 
 class ProductBloc extends Bloc<ProductEvent, ProductState> {
-  final IProductDetailRepository _detailRepository = serviceLocator.get();
-  final ICardLocalRepository _localRepository = serviceLocator.get();
+  final IProductDetailRepository _detailRepository;
+  final ICardLocalRepository _localRepository;
 
-  ProductBloc() : super(ProductDetailInitialState()) {
+  ProductBloc(this._detailRepository, this._localRepository)
+      : super(ProductDetailInitialState()) {
     on<ProductDetailInitialized>(
       (event, emit) async {
         emit(ProductDetailLoadingState());
