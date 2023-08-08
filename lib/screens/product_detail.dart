@@ -3,7 +3,7 @@
 import 'dart:ui';
 import 'package:apple_shop/bloc/product_details/product_bloc.dart';
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
-import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
@@ -13,27 +13,22 @@ import 'package:apple_shop/data/model/variant_types.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
+import 'package:apple_shop/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../data/model/variant.dart';
 
-class ProductDetailScreen extends StatefulWidget {
+class ProductDetailScreen extends StatelessWidget {
   Product product;
   ProductDetailScreen(this.product, {super.key});
 
-  @override
-  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
-}
-
-class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           ProductBloc(serviceLocator.get(), serviceLocator.get())
             ..add(
-              ProductDetailInitialized(
-                  widget.product.id, widget.product.categoryId),
+              ProductDetailInitialized(product.id, product.categoryId),
             ),
       child: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
@@ -42,98 +37,92 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             body: SafeArea(
               child: Directionality(
                 textDirection: TextDirection.rtl,
-                child: CustomScrollView(
-                  slivers: [
-                    if (state is ProductDetailLoadingState) ...{
-                      const SliverToBoxAdapter(
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.blueColor,
-                            strokeWidth: 4,
-                          ),
-                        ),
-                      ),
-                    } else ...{
-                      //get single product appbar
-                      if (state is ProductDetailResponseState) ...{
-                        state.productCategory.fold(
-                          (exception) => SliverToBoxAdapter(
-                            child: Center(
-                              child: Text(exception),
-                            ),
-                          ),
-                          (productCatgeory) =>
-                              SingleProductAppbar(productCatgeory),
-                        ),
-                      },
-                      //get product name
-                      SingleProductName(widget.product.name),
-                      //get product images from gallery
-                      if (state is ProductDetailResponseState) ...{
-                        state.productImages.fold(
-                          (exception) => SliverToBoxAdapter(
-                            child: Center(
-                              child: Text(exception),
-                            ),
-                          ),
-                          (productImages) => SingleProductImage(
-                              productImages, widget.product.thumbnail),
-                        )
-                      },
-                      //get product variants
-                      if (state is ProductDetailResponseState) ...{
-                        state.productVariants.fold(
-                          (exception) {
-                            return SliverToBoxAdapter(
-                              child: Center(
-                                child: Text(exception),
-                              ),
-                            );
-                          },
-                          (productVariantList) {
-                            return VariantContainerGenerator(
-                                productVariantList);
-                          },
-                        )
-                      },
-                      //get product properties
-                      if (state is ProductDetailResponseState) ...{
-                        state.productProperties.fold(
-                          (exception) => SliverToBoxAdapter(
-                            child: Center(
-                              child: Text(exception),
-                            ),
-                          ),
-                          (productPropertiesList) =>
-                              ProductProperties(productPropertiesList),
-                        ),
-                      },
-                      //get product descryption
-                      ProductDescryption(widget.product.description),
-                      //get users opinion
-                      const _GetUserOpinion(),
-                      //price tag and add to card section
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 22, vertical: 22),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              AddToCartButton(widget.product),
-                              const ProductPriceTag(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    }
-                  ],
-                ),
+                child: _getDetailScreenContent(context, state, product),
               ),
             ),
           );
         },
       ),
+    );
+  }
+}
+
+Widget _getDetailScreenContent(
+    BuildContext context, ProductState state, Product product) {
+  if (state is ProductDetailLoadingState) {
+    return const LoadingAnimation();
+  } else if (state is ProductDetailResponseState) {
+    return CustomScrollView(
+      slivers: [
+        //get single product appbar
+        state.productCategory.fold(
+          (exception) => SliverToBoxAdapter(
+            child: Center(
+              child: Text(exception),
+            ),
+          ),
+          (productCatgeory) => SingleProductAppbar(productCatgeory),
+        ),
+
+        //get product name
+        SingleProductName(product.name),
+        //get product images from gallery
+        state.productImages.fold(
+          (exception) => SliverToBoxAdapter(
+            child: Center(
+              child: Text(exception),
+            ),
+          ),
+          (productImages) =>
+              SingleProductImage(productImages, product.thumbnail),
+        ),
+
+        //get product variants
+
+        state.productVariants.fold(
+          (exception) {
+            return SliverToBoxAdapter(
+              child: Center(
+                child: Text(exception),
+              ),
+            );
+          },
+          (productVariantList) {
+            return VariantContainerGenerator(productVariantList);
+          },
+        ),
+        //get product properties
+        state.productProperties.fold(
+          (exception) => SliverToBoxAdapter(
+            child: Center(
+              child: Text(exception),
+            ),
+          ),
+          (productPropertiesList) => ProductProperties(productPropertiesList),
+        ),
+
+        //get product descryption
+        ProductDescryption(product.description),
+        //get users opinion
+        const _GetUserOpinion(),
+        //price tag and add to card section
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AddToCartButton(product),
+                const ProductPriceTag(),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  } else {
+    return const Center(
+      child: Text('connection has lost!'),
     );
   }
 }

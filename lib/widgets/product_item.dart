@@ -1,8 +1,9 @@
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
-import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/product_detail.dart';
+import 'package:apple_shop/utils/extensions/int_extension.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,7 +88,7 @@ class ProductItem extends StatelessWidget {
                     overflow: TextOverflow.ellipsis),
               ),
             ),
-            //price container handled
+            //price container
             Container(
               height: 53,
               decoration: const BoxDecoration(
@@ -120,7 +121,7 @@ class ProductItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          product.price.toString(),
+                          product.price.convertToPrice(),
                           style: const TextStyle(
                               fontFamily: 'sm',
                               color: AppColors.whiteColor,
@@ -128,7 +129,7 @@ class ProductItem extends StatelessWidget {
                               decoration: TextDecoration.lineThrough),
                         ),
                         Text(
-                          product.realPrice.toString(),
+                          product.realPrice.convertToPrice(),
                           style: const TextStyle(
                               fontFamily: 'sm',
                               color: AppColors.whiteColor,

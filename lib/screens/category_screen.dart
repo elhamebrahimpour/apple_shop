@@ -1,6 +1,6 @@
 import 'package:apple_shop/bloc/category/category_bloc.dart';
 import 'package:apple_shop/bloc/product_category/product_category_bloc.dart';
-import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/products_screen.dart';

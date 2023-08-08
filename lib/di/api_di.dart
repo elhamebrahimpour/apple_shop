@@ -28,16 +28,16 @@ Future getItInit() async {
 
   _initRepositories();
 
-  _initBlocs();
+  //bloc
+  serviceLocator.registerSingleton<CardBloc>(
+    CardBloc(
+      serviceLocator.get(),
+      serviceLocator.get(),
+    ),
+  );
 }
 
 Future<void> _initComponents() async {
-  serviceLocator.registerSingleton<Dio>(
-      Dio(BaseOptions(baseUrl: 'http://startflutter.ir/api/')));
-
-  serviceLocator.registerSingleton<SharedPreferences>(
-      await SharedPreferences.getInstance());
-
   //payment part
   serviceLocator.registerSingleton<UrlLaunchHandler>(
     UrlLauncher(),
@@ -48,6 +48,12 @@ Future<void> _initComponents() async {
       serviceLocator.get(),
     ),
   );
+
+  serviceLocator.registerSingleton<Dio>(
+      Dio(BaseOptions(baseUrl: 'http://startflutter.ir/api/')));
+
+  serviceLocator.registerSingleton<SharedPreferences>(
+      await SharedPreferences.getInstance());
 }
 
 //app datasources
@@ -92,15 +98,8 @@ void _initRepositories() {
   serviceLocator.registerFactory<IProductCategoryRepository>(
       () => ProductCategoryRepository());
 
-  serviceLocator
-      .registerFactory<ICardLocalRepository>(() => CardLocalRepository());
-}
-
-//bloc registraions
-void _initBlocs() {
-  serviceLocator.registerSingleton<CardBloc>(
-    CardBloc(
-      serviceLocator.get(),
+  serviceLocator.registerFactory<ICardLocalRepository>(
+    () => CardLocalRepository(
       serviceLocator.get(),
     ),
   );

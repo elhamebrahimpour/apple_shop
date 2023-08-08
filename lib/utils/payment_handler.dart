@@ -1,7 +1,5 @@
-import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/utils/url_handler.dart';
 import 'package:flutter/foundation.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:zarinpal/zarinpal.dart';
 
 abstract class PaymentHandler {
@@ -14,7 +12,7 @@ abstract class PaymentHandler {
 
 class ZarinPalPaymentHandler extends PaymentHandler {
   final PaymentRequest _paymentRequest = PaymentRequest();
-  final UrlLauncher urlLauncher;
+  final UrlLaunchHandler urlLauncher;
   String? status;
   String? authority;
 
@@ -28,13 +26,15 @@ class ZarinPalPaymentHandler extends PaymentHandler {
     _paymentRequest.setMerchantID('d645fba8-1b29-11ea-be59-000c295eb8fc');
     _paymentRequest.setCallbackURL('expertflutter://shop');
 
-    linkStream.listen((deeplink) {
-      if (deeplink!.toLowerCase().contains('authority')) {
-        authority = deeplink.extractValueFromQuery('Authority');
-        status = deeplink.extractValueFromQuery('Status');
-        verifyPaymentRequest();
-      }
-    });
+    /* linkStream.listen(
+      (deeplink) {
+        if (deeplink!.toLowerCase().contains('authority')) {
+          authority = deeplink.extractValueFromQuery('Authority');
+          status = deeplink.extractValueFromQuery('Status');
+          verifyPaymentRequest();
+        }
+      },
+    );*/
   }
 
   @override

@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
-import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/card_model.dart';
 import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';

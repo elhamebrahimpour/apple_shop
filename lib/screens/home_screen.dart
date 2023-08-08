@@ -1,27 +1,17 @@
 import 'package:apple_shop/bloc/home/home_bloc.dart';
-import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/widgets/banner_slider.dart';
 import 'package:apple_shop/widgets/category_item_chip.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
+import 'package:apple_shop/widgets/loading_animation.dart';
 import 'package:apple_shop/widgets/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<HomeBloc>(context).add(HomeGetRequestedEvent());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,80 +22,80 @@ class _HomeScreenState extends State<HomeScreen> {
           body: SafeArea(
             child: Directionality(
               textDirection: TextDirection.rtl,
-              child: CustomScrollView(
-                slivers: [
-                  if (state is HomeLoadingState) ...{
-                    const SliverToBoxAdapter(
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.blueColor,
-                          strokeWidth: 4,
-                        ),
-                      ),
-                    ),
-                  } else ...{
-                    //get search appbar
-                    const SliverToBoxAdapter(
-                      child: CustomAppBar(
-                          title: 'جستجوی محصولات', searchIconVisibility: true),
-                    ),
-                    //get banners
-                    if (state is HomeSuccessResponseState) ...[
-                      state.banners.fold((exception) {
-                        return SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(exception),
-                          ),
-                        );
-                      }, (bannerList) {
-                        return SliverToBoxAdapter(
-                          child: BannerSlider(bannerList),
-                        );
-                      })
-                    ],
-                    //get categories
-                    const _GetCategoriesListTitle(),
-                    if (state is HomeSuccessResponseState) ...[
-                      state.categories.fold(
-                        (exception) => SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(exception),
-                          ),
-                        ),
-                        (categoryList) => _GetCategoriesList(categoryList),
-                      ),
-                    ],
-                    //get best selling products
-                    const _GetBestSellingProductsTitle(),
-                    if (state is HomeSuccessResponseState) ...[
-                      state.bestSellerproducts.fold(
-                        (exception) => SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(exception),
-                          ),
-                        ),
-                        (productList) => _GetBestSellingProducts(productList),
-                      ),
-                    ],
-                    //get most visited products
-                    const _GetMostVisitedProductsTitle(),
-                    if (state is HomeSuccessResponseState) ...[
-                      state.hotestproducts.fold(
-                        (exception) => SliverToBoxAdapter(
-                          child: Center(
-                            child: Text(exception),
-                          ),
-                        ),
-                        (productList) => _GetMostVisitedProducts(productList),
-                      ),
-                    ],
-                  },
-                ],
-              ),
+              child: _getHomeScreenContent(context, state),
             ),
           ),
         );
       },
+    );
+  }
+}
+
+Widget _getHomeScreenContent(BuildContext context, HomeState state) {
+  if (state is HomeLoadingState) {
+    return const LoadingAnimation();
+  } else if (state is HomeSuccessResponseState) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<HomeBloc>().add(HomeGetRequestedEvent());
+      },
+      child: CustomScrollView(
+        slivers: [
+          //get search appbar
+          const SliverToBoxAdapter(
+            child: CustomAppBar(
+                title: 'جستجوی محصولات', searchIconVisibility: true),
+          ),
+          //get banners
+          state.banners.fold((exception) {
+            return SliverToBoxAdapter(
+              child: Center(
+                child: Text(exception),
+              ),
+            );
+          }, (bannerList) {
+            return SliverToBoxAdapter(
+              child: BannerSlider(bannerList),
+            );
+          }),
+          //get categories
+          const _GetCategoriesListTitle(),
+          state.categories.fold(
+            (exception) => SliverToBoxAdapter(
+              child: Center(
+                child: Text(exception),
+              ),
+            ),
+            (categoryList) => _GetCategoriesList(categoryList),
+          ),
+
+          //get best selling products
+          const _GetBestSellingProductsTitle(),
+          state.bestSellerproducts.fold(
+            (exception) => SliverToBoxAdapter(
+              child: Center(
+                child: Text(exception),
+              ),
+            ),
+            (productList) => _GetBestSellingProducts(productList),
+          ),
+
+          //get most visited products
+          const _GetMostVisitedProductsTitle(),
+          state.hotestproducts.fold(
+            (exception) => SliverToBoxAdapter(
+              child: Center(
+                child: Text(exception),
+              ),
+            ),
+            (productList) => _GetMostVisitedProducts(productList),
+          ),
+        ],
+      ),
+    );
+  } else {
+    return const Center(
+      child: Text('connection has lost!'),
     );
   }
 }

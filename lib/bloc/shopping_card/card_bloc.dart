@@ -9,7 +9,7 @@ part 'card_state.dart';
 
 class CardBloc extends Bloc<CardEvent, CardState> {
   final ICardLocalRepository _localRepository;
-  final ZarinPalPaymentHandler _zarinPalPaymentHandler;
+  final PaymentHandler _zarinPalPaymentHandler;
 
   CardBloc(this._localRepository, this._zarinPalPaymentHandler)
       : super(CardInitialState()) {

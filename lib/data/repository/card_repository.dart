@@ -1,6 +1,5 @@
 import 'package:apple_shop/data/datasource/card_datasource.dart';
 import 'package:apple_shop/data/model/card_model.dart';
-import 'package:apple_shop/di/api_di.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class ICardLocalRepository {
@@ -12,7 +11,9 @@ abstract class ICardLocalRepository {
 }
 
 class CardLocalRepository extends ICardLocalRepository {
-  final ICardLocalDataSource _localDataSource = serviceLocator.get();
+  final ICardLocalDataSource _localDataSource;
+
+  CardLocalRepository(this._localDataSource);
 
   @override
   Future<Either<String, String>> addProductToCard(CardModel cardModel) async {

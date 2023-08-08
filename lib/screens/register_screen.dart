@@ -1,5 +1,5 @@
 // ignore_for_file: avoid_print
-import 'package:apple_shop/constants/app_colors.dart';
+import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/repository/authentication_repository.dart';
 import 'package:apple_shop/utils/auth_manager.dart';
 import 'package:flutter/material.dart';
