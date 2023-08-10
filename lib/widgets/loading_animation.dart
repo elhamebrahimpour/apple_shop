@@ -9,8 +9,8 @@ class LoadingAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: SizedBox(
-        height: 80,
-        width: 80,
+        height: 60,
+        width: 60,
         child: LoadingIndicator(
           indicatorType: Indicator.ballSpinFadeLoader,
           colors: [AppColors.blueColor],

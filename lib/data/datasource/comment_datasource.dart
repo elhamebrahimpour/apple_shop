@@ -1,21 +1,21 @@
-import 'package:apple_shop/data/model/category.dart';
+import 'package:apple_shop/data/model/comment.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/utils/api_exception.dart';
 import 'package:dio/dio.dart';
 
-abstract class ICategoryDatasource {
-  Future<List<Category>> getCategoryList();
+abstract class ICommentDatasource {
+  Future<List<Comments>> getComments(String productId);
 }
 
-class CategoryRemoteDatasource extends ICategoryDatasource {
+class CommentDatasource extends ICommentDatasource {
   final Dio _dio = serviceLocator.get();
 
   @override
-  Future<List<Category>> getCategoryList() async {
+  Future<List<Comments>> getComments(String productId) async {
     try {
-      var response = await _dio.get('collections/category/records');
+      var response = await _dio.get('collections/comments/records');
       return response.data['items']
-          .map<Category>((jsonObject) => Category.fromJsonMap(jsonObject))
+          .map<Comments>((jsonObject) => Comments.fromJsonMap(jsonObject))
           .toList();
       // ignore: deprecated_member_use
     } on DioError catch (e) {

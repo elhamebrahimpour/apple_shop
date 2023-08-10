@@ -3,6 +3,7 @@ import 'package:apple_shop/data/datasource/authentication_datasource.dart';
 import 'package:apple_shop/data/datasource/banner_datasource.dart';
 import 'package:apple_shop/data/datasource/card_datasource.dart';
 import 'package:apple_shop/data/datasource/category_datasource.dart';
+import 'package:apple_shop/data/datasource/comment_datasource.dart';
 import 'package:apple_shop/data/datasource/product_category_datasource.dart';
 import 'package:apple_shop/data/datasource/product_datasource.dart';
 import 'package:apple_shop/data/datasource/product_detail_datasource.dart';
@@ -10,6 +11,7 @@ import 'package:apple_shop/data/repository/authentication_repository.dart';
 import 'package:apple_shop/data/repository/banner_repository.dart';
 import 'package:apple_shop/data/repository/card_repository.dart';
 import 'package:apple_shop/data/repository/category_repository.dart';
+import 'package:apple_shop/data/repository/comment_repository.dart';
 import 'package:apple_shop/data/repository/product_category_repository.dart';
 import 'package:apple_shop/data/repository/product_detail_repository.dart';
 import 'package:apple_shop/data/repository/product_repository.dart';
@@ -78,6 +80,8 @@ void _initDatasources() {
 
   serviceLocator
       .registerFactory<ICardLocalDataSource>(() => CardLocalDataSource());
+
+  serviceLocator.registerFactory<ICommentDatasource>(() => CommentDatasource());
 }
 
 //app repositories
@@ -103,4 +107,6 @@ void _initRepositories() {
       serviceLocator.get(),
     ),
   );
+
+  serviceLocator.registerFactory<ICommentRepository>(() => CommentRepository());
 }

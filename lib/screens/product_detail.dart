@@ -32,97 +32,94 @@ class ProductDetailScreen extends StatelessWidget {
             ),
       child: BlocBuilder<ProductBloc, ProductState>(
         builder: (context, state) {
+          if (state is ProductDetailLoadingState) {
+            return const LoadingAnimation();
+          }
           return Scaffold(
             backgroundColor: AppColors.backColor,
             body: SafeArea(
               child: Directionality(
                 textDirection: TextDirection.rtl,
-                child: _getDetailScreenContent(context, state, product),
+                child: CustomScrollView(
+                  slivers: [
+                    if (state is ProductDetailResponseState) ...{
+                      //get single product appbar
+                      state.productCategory.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (productCatgeory) =>
+                            SingleProductAppbar(productCatgeory),
+                      ),
+
+                      //get product name
+                      SingleProductName(product.name),
+
+                      //get product images from gallery
+                      state.productImages.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (productImages) => SingleProductImage(
+                            productImages, product.thumbnail),
+                      ),
+
+                      //get product variants
+                      state.productVariants.fold(
+                        (exception) {
+                          return SliverToBoxAdapter(
+                            child: Center(
+                              child: Text(exception),
+                            ),
+                          );
+                        },
+                        (productVariantList) {
+                          return VariantContainerGenerator(productVariantList);
+                        },
+                      ),
+                      //get product properties
+                      state.productProperties.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (productPropertiesList) =>
+                            ProductProperties(productPropertiesList),
+                      ),
+
+                      //get product descryption
+                      ProductDescryption(product.description),
+
+                      //get users opinion
+                      const _GetUserOpinion(),
+
+                      //price tag and add to card section
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 22, vertical: 22),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              AddToCartButton(product),
+                              const ProductPriceTag(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    }
+                  ],
+                ),
               ),
             ),
           );
         },
       ),
-    );
-  }
-}
-
-Widget _getDetailScreenContent(
-    BuildContext context, ProductState state, Product product) {
-  if (state is ProductDetailLoadingState) {
-    return const LoadingAnimation();
-  } else if (state is ProductDetailResponseState) {
-    return CustomScrollView(
-      slivers: [
-        //get single product appbar
-        state.productCategory.fold(
-          (exception) => SliverToBoxAdapter(
-            child: Center(
-              child: Text(exception),
-            ),
-          ),
-          (productCatgeory) => SingleProductAppbar(productCatgeory),
-        ),
-
-        //get product name
-        SingleProductName(product.name),
-        //get product images from gallery
-        state.productImages.fold(
-          (exception) => SliverToBoxAdapter(
-            child: Center(
-              child: Text(exception),
-            ),
-          ),
-          (productImages) =>
-              SingleProductImage(productImages, product.thumbnail),
-        ),
-
-        //get product variants
-
-        state.productVariants.fold(
-          (exception) {
-            return SliverToBoxAdapter(
-              child: Center(
-                child: Text(exception),
-              ),
-            );
-          },
-          (productVariantList) {
-            return VariantContainerGenerator(productVariantList);
-          },
-        ),
-        //get product properties
-        state.productProperties.fold(
-          (exception) => SliverToBoxAdapter(
-            child: Center(
-              child: Text(exception),
-            ),
-          ),
-          (productPropertiesList) => ProductProperties(productPropertiesList),
-        ),
-
-        //get product descryption
-        ProductDescryption(product.description),
-        //get users opinion
-        const _GetUserOpinion(),
-        //price tag and add to card section
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 22),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AddToCartButton(product),
-                const ProductPriceTag(),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  } else {
-    return const Center(
-      child: Text('connection has lost!'),
     );
   }
 }
@@ -728,10 +725,10 @@ class ProductPriceTag extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    Column(
+                    const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: const [
+                      children: [
                         Text(
                           '46.800.000',
                           style: TextStyle(
