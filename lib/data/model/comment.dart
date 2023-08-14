@@ -1,8 +1,8 @@
 class Comments {
-  String? id;
-  String? text;
-  String? productId;
-  String? userId;
+  String id;
+  String text;
+  String productId;
+  String userId;
 
   Comments(
     this.id,

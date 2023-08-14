@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'dart:ui';
+import 'package:apple_shop/bloc/comment/comment_bloc.dart';
 import 'package:apple_shop/bloc/product_details/product_bloc.dart';
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
@@ -13,6 +14,7 @@ import 'package:apple_shop/data/model/variant_types.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
+import 'package:apple_shop/widgets/comment_bottomsheet.dart';
 import 'package:apple_shop/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,7 +98,7 @@ class ProductDetailScreen extends StatelessWidget {
                       ProductDescryption(product.description),
 
                       //get users opinion
-                      const _GetUserOpinion(),
+                      GetUserOpinion(product.id),
 
                       //price tag and add to card section
                       SliverToBoxAdapter(
@@ -289,95 +291,119 @@ class _ColorVariantWidgetState extends State<ColorVariantWidget> {
   }
 }
 
-class _GetUserOpinion extends StatelessWidget {
-  const _GetUserOpinion({
+class GetUserOpinion extends StatelessWidget {
+  final String productId;
+  const GetUserOpinion(
+    this.productId, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.only(top: 22, left: 22, right: 22),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        height: 46,
-        decoration: BoxDecoration(
-          color: AppColors.whiteColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(width: 1, color: AppColors.greyColor),
-        ),
-        child: Row(
-          children: [
-            const Text(
-              'نظرات کاربران: ',
-              style: TextStyle(
-                color: AppColors.blackColor,
-                fontFamily: 'sb',
-                fontSize: 14,
+      child: GestureDetector(
+        onTap: () => showModalBottomSheet(
+          context: context,
+          builder: ((context) {
+            return BlocProvider(
+              create: (context) => CommentBloc(
+                serviceLocator.get(),
+              )..add(
+                  CommentInitializedEvent(productId),
+                ),
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.5,
+                minChildSize: 0.2,
+                maxChildSize: 0.7,
+                builder: (context, scrollController) {
+                  return CommentBottomsheet(scrollController);
+                },
               ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  height: 26,
-                  width: 26,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: AppColors.greyColor,
-                  ),
+            );
+          }),
+        ),
+        child: Container(
+          margin: const EdgeInsets.only(top: 22, left: 22, right: 22),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          height: 46,
+          decoration: BoxDecoration(
+            color: AppColors.whiteColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(width: 1, color: AppColors.greyColor),
+          ),
+          child: Row(
+            children: [
+              const Text(
+                'نظرات کاربران: ',
+                style: TextStyle(
+                  color: AppColors.blackColor,
+                  fontFamily: 'sb',
+                  fontSize: 14,
                 ),
-                Positioned(
-                  right: 15,
-                  child: Container(
-                    height: 26,
-                    width: 26,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      color: AppColors.greenColor,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  right: 30,
-                  child: Container(
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
                     height: 26,
                     width: 26,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6),
                       color: AppColors.greyColor,
                     ),
-                    child: const Center(
-                      child: Text(
-                        '+10',
-                        style: TextStyle(
-                          color: AppColors.whiteColor,
-                          fontFamily: 'sb',
-                          fontSize: 12,
-                        ),
+                  ),
+                  Positioned(
+                    right: 15,
+                    child: Container(
+                      height: 26,
+                      width: 26,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: AppColors.greenColor,
                       ),
                     ),
                   ),
-                )
-              ],
-            ),
-            const Spacer(),
-            const Text(
-              'مشاهده ',
-              style: TextStyle(
-                color: AppColors.blueColor,
-                fontFamily: 'sb',
-                fontSize: 12,
+                  Positioned(
+                    right: 30,
+                    child: Container(
+                      height: 26,
+                      width: 26,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: AppColors.greyColor,
+                      ),
+                      child: const Center(
+                        child: Text(
+                          '+10',
+                          style: TextStyle(
+                            color: AppColors.whiteColor,
+                            fontFamily: 'sb',
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
-            ),
-            const SizedBox(
-              width: 6,
-            ),
-            Image.asset('images/icon_left_categroy.png')
-          ],
+              const Spacer(),
+              const Text(
+                'مشاهده ',
+                style: TextStyle(
+                  color: AppColors.blueColor,
+                  fontFamily: 'sb',
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(
+                width: 6,
+              ),
+              Image.asset('images/icon_left_categroy.png')
+            ],
+          ),
         ),
       ),
     );
