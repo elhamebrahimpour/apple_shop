@@ -1,5 +1,6 @@
 import 'package:apple_shop/bloc/comment/comment_bloc.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
+import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:apple_shop/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,9 +14,7 @@ class CommentBottomsheet extends StatelessWidget {
     return BlocBuilder<CommentBloc, CommentState>(
       builder: (context, state) {
         if (state is CommentLoadingState) {
-          return const Center(
-            child: LoadingAnimation(),
-          );
+          return const LoadingAnimation();
         }
         return CustomScrollView(
           controller: scrollController,
@@ -40,7 +39,7 @@ class CommentBottomsheet extends StatelessWidget {
                     (context, index) {
                       return Container(
                         margin: const EdgeInsets.symmetric(
-                          vertical: 12,
+                          vertical: 8,
                           horizontal: 8,
                         ),
                         padding: const EdgeInsets.symmetric(
@@ -48,17 +47,55 @@ class CommentBottomsheet extends StatelessWidget {
                           horizontal: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.blueColor.withOpacity(0.3),
+                          color: AppColors.whiteColor,
                           borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          comments[index].text,
-                          textAlign: TextAlign.end,
-                          style: const TextStyle(
-                            color: AppColors.blackColor,
-                            fontFamily: 'sm',
-                            fontSize: 14,
+                          border: Border.all(
+                            width: 1,
+                            color: AppColors.blueColor.withOpacity(0.1),
+                            strokeAlign: BorderSide.strokeAlignOutside,
                           ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    comments[index].userName,
+                                    textAlign: TextAlign.end,
+                                    style: const TextStyle(
+                                      color: AppColors.blackColor,
+                                      fontFamily: 'sm',
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text(
+                                    comments[index].text,
+                                    textAlign: TextAlign.end,
+                                    style: const TextStyle(
+                                      color: AppColors.blackColor,
+                                      fontFamily: 'sm',
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            CircleAvatar(
+                              radius: 18,
+                              backgroundColor: Colors.transparent,
+                              child: ImageCachedWidget(
+                                imageUrl: comments[index].userAvatar,
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },

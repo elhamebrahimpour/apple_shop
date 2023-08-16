@@ -8,6 +8,7 @@ class ImageCachedWidget extends StatelessWidget {
       : super(key: key);
   String? imageUrl;
   double radius;
+
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -19,7 +20,10 @@ class ImageCachedWidget extends StatelessWidget {
           color: AppColors.greyColor,
         ),
         errorWidget: (context, url, error) => Container(
-          color: AppColors.redColor,
+          decoration: BoxDecoration(
+            color: AppColors.blueColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:apple_shop/bloc/product_category/product_category_bloc.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
+import 'package:apple_shop/widgets/loading_animation.dart';
 import 'package:apple_shop/widgets/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,11 +24,14 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProductCategoryBloc, ProductCategoryState>(
-      builder: (context, state) {
-        return Scaffold(
-          backgroundColor: AppColors.backColor,
-          body: SafeArea(
+    return Scaffold(
+      backgroundColor: AppColors.backColor,
+      body: BlocBuilder<ProductCategoryBloc, ProductCategoryState>(
+        builder: (context, state) {
+          if (state is ProductCategoryLoading) {
+            return const LoadingAnimation();
+          }
+          return SafeArea(
             child: Directionality(
               textDirection: TextDirection.rtl,
               child: CustomScrollView(
@@ -66,9 +70,9 @@ class _ProductsListScreenState extends State<ProductsListScreen> {
                 ],
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

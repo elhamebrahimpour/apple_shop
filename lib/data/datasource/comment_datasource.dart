@@ -13,7 +13,10 @@ class CommentDatasource extends ICommentDatasource {
   @override
   Future<List<Comments>> getComments(String productId) async {
     try {
-      Map<String, String> queryParams = {'filter': 'product_id= "$productId"'};
+      Map<String, String> queryParams = {
+        'filter': 'product_id="$productId"',
+        'expand': 'user_id'
+      };
 
       var response = await _dio.get('collections/comment/records',
           queryParameters: queryParams);

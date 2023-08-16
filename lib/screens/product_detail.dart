@@ -26,20 +26,20 @@ class ProductDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          ProductBloc(serviceLocator.get(), serviceLocator.get())
-            ..add(
-              ProductDetailInitialized(product.id, product.categoryId),
-            ),
-      child: BlocBuilder<ProductBloc, ProductState>(
-        builder: (context, state) {
-          if (state is ProductDetailLoadingState) {
-            return const LoadingAnimation();
-          }
-          return Scaffold(
-            backgroundColor: AppColors.backColor,
-            body: SafeArea(
+    return Scaffold(
+      backgroundColor: AppColors.backColor,
+      body: BlocProvider(
+        create: (context) =>
+            ProductBloc(serviceLocator.get(), serviceLocator.get())
+              ..add(
+                ProductDetailInitialized(product.id, product.categoryId),
+              ),
+        child: BlocBuilder<ProductBloc, ProductState>(
+          builder: (context, state) {
+            if (state is ProductDetailLoadingState) {
+              return const LoadingAnimation();
+            }
+            return SafeArea(
               child: Directionality(
                 textDirection: TextDirection.rtl,
                 child: CustomScrollView(
@@ -118,9 +118,9 @@ class ProductDetailScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

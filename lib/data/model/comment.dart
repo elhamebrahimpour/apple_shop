@@ -3,12 +3,16 @@ class Comments {
   String text;
   String productId;
   String userId;
+  String userAvatar;
+  String userName;
 
   Comments(
     this.id,
     this.text,
     this.productId,
     this.userId,
+    this.userAvatar,
+    this.userName,
   );
 
   factory Comments.fromJsonMap(Map<String, dynamic> jsonObject) {
@@ -17,6 +21,8 @@ class Comments {
       jsonObject['text'],
       jsonObject['product_id'],
       jsonObject['user_id'],
+      'http://startflutter.ir/api/files/${jsonObject['expand']['user_id']['collectionName']}/${jsonObject['expand']['user_id']['id']}/${jsonObject['expand']['user_id']['avatar']}',
+      jsonObject['expand']['user_id']['name'],
     );
   }
 }
