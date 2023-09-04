@@ -11,8 +11,9 @@ class ProductDetailResponseState extends ProductState {
   Either<String, List<ProductVaraint>> productVariants;
   Either<String, Category> productCategory;
   Either<String, List<Property>> productProperties;
+  Either<String, List<Comments>> comments;
   ProductDetailResponseState(this.productImages, this.productVariants,
-      this.productCategory, this.productProperties);
+      this.productCategory, this.productProperties, this.comments);
 }
 
 class ProductCardResponseState extends ProductState {}

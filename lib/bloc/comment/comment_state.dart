@@ -9,3 +9,5 @@ class CommentResponseState extends CommentState {
   final Either<String, List<Comments>> comments;
   CommentResponseState(this.comments);
 }
+
+class CommentUpdateResponseState extends CommentState {}

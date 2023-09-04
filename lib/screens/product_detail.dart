@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:apple_shop/bloc/comment/comment_bloc.dart';
 import 'package:apple_shop/bloc/product_details/product_bloc.dart';
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
+import 'package:apple_shop/data/model/comment.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
@@ -20,20 +21,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../data/model/variant.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget {
   Product product;
   ProductDetailScreen(this.product, {super.key});
 
+  @override
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backColor,
       body: BlocProvider(
-        create: (context) =>
-            ProductBloc(serviceLocator.get(), serviceLocator.get())
-              ..add(
-                ProductDetailInitialized(product.id, product.categoryId),
-              ),
+        create: (context) => ProductBloc(
+          serviceLocator.get(),
+          serviceLocator.get(),
+          serviceLocator.get(),
+        )..add(
+            ProductDetailInitialized(
+                widget.product.id, widget.product.categoryId),
+          ),
         child: BlocBuilder<ProductBloc, ProductState>(
           builder: (context, state) {
             if (state is ProductDetailLoadingState) {
@@ -57,7 +66,7 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
 
                       //get product name
-                      SingleProductName(product.name),
+                      SingleProductName(widget.product.name),
 
                       //get product images from gallery
                       state.productImages.fold(
@@ -67,7 +76,7 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                         ),
                         (productImages) => SingleProductImage(
-                            productImages, product.thumbnail),
+                            productImages, widget.product.thumbnail),
                       ),
 
                       //get product variants
@@ -95,11 +104,20 @@ class ProductDetailScreen extends StatelessWidget {
                       ),
 
                       //get product descryption
-                      ProductDescryption(product.description),
+                      ProductDescryption(widget.product.description),
 
                       //get users opinion
-                      GetUserOpinion(product.id),
-
+                      state.comments.fold(
+                        (exception) => SliverToBoxAdapter(
+                          child: Center(
+                            child: Text(exception),
+                          ),
+                        ),
+                        (comments) => GetUserOpinion(
+                          parentWidget: widget,
+                          comments: comments,
+                        ),
+                      ),
                       //price tag and add to card section
                       SliverToBoxAdapter(
                         child: Padding(
@@ -108,7 +126,7 @@ class ProductDetailScreen extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              AddToCartButton(product),
+                              AddToCartButton(widget.product),
                               const ProductPriceTag(),
                             ],
                           ),
@@ -292,10 +310,12 @@ class _ColorVariantWidgetState extends State<ColorVariantWidget> {
 }
 
 class GetUserOpinion extends StatelessWidget {
-  final String productId;
-  const GetUserOpinion(
-    this.productId, {
+  final ProductDetailScreen parentWidget;
+  final List<Comments> comments;
+  const GetUserOpinion({
     Key? key,
+    required this.parentWidget,
+    required this.comments,
   }) : super(key: key);
 
   @override
@@ -304,20 +324,23 @@ class GetUserOpinion extends StatelessWidget {
       child: GestureDetector(
         onTap: () => showModalBottomSheet(
           context: context,
+          isScrollControlled: true,
+          isDismissible: true,
+          useSafeArea: true,
+          showDragHandle: true,
           builder: ((context) {
             return BlocProvider(
-              create: (context) => CommentBloc(
-                serviceLocator.get(),
-              )..add(
-                  CommentInitializedEvent(productId),
+              create: (context) => serviceLocator.get<CommentBloc>()
+                ..add(
+                  CommentInitializedEvent(parentWidget.product.id),
                 ),
-              child: DraggableScrollableSheet(
-                initialChildSize: 0.5,
-                minChildSize: 0.2,
-                maxChildSize: 0.7,
-                builder: (context, scrollController) {
-                  return CommentBottomsheet(scrollController);
-                },
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: CommentBottomsheet(
+                  productId: parentWidget.product.id,
+                ),
               ),
             );
           }),
@@ -349,36 +372,37 @@ class GetUserOpinion extends StatelessWidget {
                 children: [
                   Container(
                     height: 26,
-                    width: 26,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(6),
-                      color: AppColors.greyColor,
+                      color: Colors.transparent,
                     ),
-                  ),
-                  Positioned(
-                    right: 15,
-                    child: Container(
-                      height: 26,
-                      width: 26,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
-                        color: AppColors.greenColor,
+                    child: SizedBox(
+                      width: 80,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: comments.length,
+                        itemBuilder: (context, index) {
+                          return comments[index].avatar.isEmpty
+                              ? Image.asset('images/avatar.png')
+                              : ImageCachedWidget(
+                                  imageUrl: comments[index].userAvatar);
+                        },
                       ),
                     ),
                   ),
                   Positioned(
-                    right: 30,
+                    right: 3 * 24,
                     child: Container(
                       height: 26,
                       width: 26,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(30),
                         color: AppColors.greyColor,
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          '+10',
-                          style: TextStyle(
+                          '+ ${comments.length}',
+                          style: const TextStyle(
                             color: AppColors.whiteColor,
                             fontFamily: 'sb',
                             fontSize: 12,

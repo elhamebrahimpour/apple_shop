@@ -1,3 +1,4 @@
+import 'package:apple_shop/bloc/comment/comment_bloc.dart';
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/data/datasource/authentication_datasource.dart';
 import 'package:apple_shop/data/datasource/banner_datasource.dart';
@@ -34,6 +35,12 @@ Future getItInit() async {
   serviceLocator.registerSingleton<CardBloc>(
     CardBloc(
       serviceLocator.get(),
+      serviceLocator.get(),
+    ),
+  );
+
+  serviceLocator.registerSingleton<CommentBloc>(
+    CommentBloc(
       serviceLocator.get(),
     ),
   );
