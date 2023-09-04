@@ -330,7 +330,7 @@ class GetUserOpinion extends StatelessWidget {
           showDragHandle: true,
           builder: ((context) {
             return BlocProvider(
-              create: (context) => serviceLocator.get<CommentBloc>()
+              create: (context) => CommentBloc(serviceLocator.get())
                 ..add(
                   CommentInitializedEvent(parentWidget.product.id),
                 ),
@@ -367,52 +367,57 @@ class GetUserOpinion extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    height: 26,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      color: Colors.transparent,
-                    ),
-                    child: SizedBox(
-                      width: 80,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: comments.length,
-                        itemBuilder: (context, index) {
-                          return comments[index].avatar.isEmpty
-                              ? Image.asset('images/avatar.png')
-                              : ImageCachedWidget(
-                                  imageUrl: comments[index].userAvatar);
-                        },
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 3 * 24,
-                    child: Container(
-                      height: 26,
-                      width: 26,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: AppColors.greyColor,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '+ ${comments.length}',
-                          style: const TextStyle(
-                            color: AppColors.whiteColor,
-                            fontFamily: 'sb',
-                            fontSize: 12,
+              comments.isEmpty
+                  ? Container()
+                  : Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          height: 26,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: Colors.transparent,
+                          ),
+                          child: SizedBox(
+                            width: 80,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount:
+                                  comments.length > 3 ? 3 : comments.length,
+                              itemBuilder: (context, index) {
+                                return comments[index].avatar.isEmpty
+                                    ? Image.asset('images/avatar.png')
+                                    : ImageCachedWidget(
+                                        imageUrl: comments[index].userAvatar);
+                              },
+                            ),
                           ),
                         ),
-                      ),
+                        Positioned(
+                          right: comments.length <= 3
+                              ? comments.length * 22
+                              : 3 * 24,
+                          child: Container(
+                            height: 26,
+                            width: 26,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: AppColors.greyColor,
+                            ),
+                            child: Center(
+                              child: Text(
+                                '+ ${comments.length}',
+                                style: const TextStyle(
+                                  color: AppColors.whiteColor,
+                                  fontFamily: 'sb',
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
               const Spacer(),
               const Text(
                 'مشاهده ',
