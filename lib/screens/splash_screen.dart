@@ -1,3 +1,4 @@
+import 'package:apple_shop/screens/main_screens.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +9,13 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          color: AppColors.blueColor,
-          image: DecorationImage(
-            repeat: ImageRepeat.repeat,
-            opacity: 0.6,
-            image: AssetImage('images/star_pattern.png'),
-          )),
+        color: AppColors.blueColor,
+        image: DecorationImage(
+          repeat: ImageRepeat.repeat,
+          opacity: 0.6,
+          image: AssetImage('images/star_pattern.png'),
+        ),
+      ),
       child: const Scaffold(
         backgroundColor: Colors.transparent,
         body: Column(
@@ -71,15 +73,18 @@ class StartIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 22, bottom: 70),
-      height: 70,
-      width: 70,
-      decoration: const BoxDecoration(
-        color: AppColors.blue,
-        shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () => navigateToMainScreen(context),
+      child: Container(
+        margin: const EdgeInsets.only(right: 22, bottom: 70),
+        height: 70,
+        width: 70,
+        decoration: const BoxDecoration(
+          color: AppColors.blue,
+          shape: BoxShape.circle,
+        ),
+        child: Image.asset('images/icon_right_arrow_cricle.png'),
       ),
-      child: Image.asset('images/icon_right_arrow_cricle.png'),
     );
   }
 }
@@ -159,4 +164,19 @@ class LogoWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+Future navigateToMainScreen(BuildContext context) {
+  return Future.delayed(
+    const Duration(seconds: 0),
+    () {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) {
+            return const MainScreens();
+          },
+        ),
+      );
+    },
+  );
 }
