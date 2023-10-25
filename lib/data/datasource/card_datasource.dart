@@ -10,6 +10,8 @@ abstract class ICardLocalDataSource {
 
   //calculate shopping card final price to pay
   Future<int> getShoppingCardFinalPrice();
+
+  Future<void> removeProduct(int index);
 }
 
 class CardLocalDataSource extends ICardLocalDataSource {
@@ -31,5 +33,10 @@ class CardLocalDataSource extends ICardLocalDataSource {
           (accumulator, cardModel) => accumulator + (cardModel.realPrice!),
         );
     return finalPrice;
+  }
+
+  @override
+  Future<void> removeProduct(int index) async {
+    cardBox.deleteAt(index);
   }
 }

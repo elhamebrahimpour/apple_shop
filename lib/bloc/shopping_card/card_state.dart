@@ -10,3 +10,5 @@ class CardFetchDataFromHiveState extends CardState {
   int? finalPrice;
   CardFetchDataFromHiveState(this.cardList, this.finalPrice);
 }
+
+class CardUpdateState extends CardState {}

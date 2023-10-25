@@ -3,6 +3,7 @@
 import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/card_model.dart';
+import 'package:apple_shop/utils/extensions/int_extension.dart';
 import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,101 +16,118 @@ class ShoppingCardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CardBloc, CardState>(
+    return BlocConsumer<CardBloc, CardState>(
+      listener: (context, state) {
+        if (state is CardUpdateState) {
+          context.read<CardBloc>().add(
+                CardFetchedDataFromHiveEvent(),
+              );
+        }
+      },
       builder: (context, state) {
-        return Scaffold(
-          backgroundColor: AppColors.backColor,
-          body: SafeArea(
-            child: Directionality(
-              textDirection: TextDirection.rtl,
-              child: Stack(
-                alignment: AlignmentDirectional.bottomCenter,
-                children: [
-                  CustomScrollView(
-                    slivers: [
-                      const SliverToBoxAdapter(
-                        child: CustomAppBar(
-                          title: 'سبد خرید',
-                          searchIconVisibility: false,
-                        ),
-                      ),
-                      //fetching shopping card products from hive local D.B
-                      if (state is CardFetchDataFromHiveState) ...[
-                        state.cardList.fold(
-                          (exception) => SliverToBoxAdapter(
-                            child: Text(exception),
+        return BlocBuilder<CardBloc, CardState>(
+          builder: (context, state) {
+            return Scaffold(
+              backgroundColor: AppColors.backColor,
+              body: SafeArea(
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Stack(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    children: [
+                      CustomScrollView(
+                        slivers: [
+                          const SliverToBoxAdapter(
+                            child: CustomAppBar(
+                              title: 'سبد خرید',
+                              searchIconVisibility: false,
+                            ),
                           ),
-                          (cardList) => cardList.isEmpty
-                              ? SliverPadding(
-                                  padding: EdgeInsets.only(
-                                    top: MediaQuery.of(context).size.height / 3,
-                                  ),
-                                  sliver: const SliverToBoxAdapter(
-                                    child: Center(
-                                      child: Text(
-                                        'سبد خرید شما خالی می‌باشد.',
-                                        style: TextStyle(
-                                          fontFamily: 'sm',
-                                          fontSize: 18,
-                                          color: AppColors.greyColor,
+                          //fetching shopping card products from hive local D.B
+                          if (state is CardFetchDataFromHiveState) ...[
+                            state.cardList.fold(
+                              (exception) => SliverToBoxAdapter(
+                                child: Text(exception),
+                              ),
+                              (cardList) => cardList.isEmpty
+                                  ? SliverPadding(
+                                      padding: EdgeInsets.only(
+                                        top:
+                                            MediaQuery.of(context).size.height /
+                                                3,
+                                      ),
+                                      sliver: const SliverToBoxAdapter(
+                                        child: Center(
+                                          child: Text(
+                                            'سبد خرید شما خالی می‌باشد.',
+                                            style: TextStyle(
+                                              fontFamily: 'sm',
+                                              fontSize: 18,
+                                              color: AppColors.greyColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SliverPadding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 80),
+                                      sliver: SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                          (context, index) {
+                                            return CardItem(
+                                              cardList[index],
+                                              index,
+                                            );
+                                          },
+                                          childCount: cardList.length,
                                         ),
                                       ),
                                     ),
-                                  ),
-                                )
-                              : SliverPadding(
-                                  padding: const EdgeInsets.only(bottom: 80),
-                                  sliver: SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                      (context, index) {
-                                        return CardItem(cardList[index]);
-                                      },
-                                      childCount: cardList.length,
-                                    ),
-                                  ),
+                            )
+                          ],
+                        ],
+                      ),
+                      if (state is CardFetchDataFromHiveState) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 22, vertical: 22),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: 52,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.greenColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
                                 ),
-                        )
-                      ],
-                    ],
-                  ),
-                  if (state is CardFetchDataFromHiveState) ...[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 22, vertical: 22),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 52,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.greenColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          onPressed: () {
-                            context
-                                .read<CardBloc>()
-                                .add(CardPaymentInitialEvent());
+                              ),
+                              onPressed: () {
+                                context
+                                    .read<CardBloc>()
+                                    .add(CardPaymentInitialEvent());
 
-                            context
-                                .read<CardBloc>()
-                                .add(CardPaymentRequestEvent());
-                          },
-                          child: Text(
-                            'قابل پرداخت: ${state.finalPrice}',
-                            style: const TextStyle(
-                              fontFamily: 'sm',
-                              fontSize: 18,
+                                context
+                                    .read<CardBloc>()
+                                    .add(CardPaymentRequestEvent());
+                              },
+                              child: Text(
+                                'قابل پرداخت: ${state.finalPrice.convertToPrice()}',
+                                style: const TextStyle(
+                                  fontFamily: 'sm',
+                                  fontSize: 18,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                ],
+                      ],
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
@@ -117,8 +135,9 @@ class ShoppingCardScreen extends StatelessWidget {
 }
 
 class CardItem extends StatelessWidget {
-  CardModel cardModel;
-  CardItem(this.cardModel, {Key? key}) : super(key: key);
+  final CardModel cardModel;
+  final int index;
+  const CardItem(this.cardModel, this.index, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -138,9 +157,10 @@ class CardItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: SizedBox(
-                      height: 120,
-                      width: 80,
-                      child: CachedNetworkImage(imageUrl: cardModel.thumbnail)),
+                    height: 120,
+                    width: 80,
+                    child: CachedNetworkImage(imageUrl: cardModel.thumbnail),
+                  ),
                 ),
                 Expanded(
                   child: Padding(
@@ -177,7 +197,7 @@ class CardItem extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              cardModel.price.toString(),
+                              cardModel.price.convertToPrice(),
                               style: const TextStyle(
                                 fontFamily: 'sm',
                                 color: AppColors.greyColor,
@@ -228,7 +248,14 @@ class CardItem extends StatelessWidget {
                               'قرمز',
                               color: 'd02026',
                             ),
-                            OptionsChip('حذف'),
+                            GestureDetector(
+                              onTap: () {
+                                context.read<CardBloc>().add(
+                                      CardRemoveProductEvent(index),
+                                    );
+                              },
+                              child: OptionsChip('حذف'),
+                            ),
                           ],
                         )
                       ],
@@ -255,7 +282,7 @@ class CardItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  cardModel.realPrice.toString(),
+                  cardModel.realPrice.convertToPrice(),
                   style: const TextStyle(
                     fontFamily: 'sb',
                     color: AppColors.blackColor,

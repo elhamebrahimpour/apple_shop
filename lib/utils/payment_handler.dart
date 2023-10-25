@@ -1,9 +1,11 @@
+import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/utils/url_handler.dart';
 import 'package:flutter/foundation.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:zarinpal/zarinpal.dart';
 
 abstract class PaymentHandler {
-  Future<void> initPaymentRequest();
+  Future<void> initPaymentRequest(int finalPrice);
 
   Future<void> sendPaymentRequest();
 
@@ -19,14 +21,14 @@ class ZarinPalPaymentHandler extends PaymentHandler {
   ZarinPalPaymentHandler(this.urlLauncher);
 
   @override
-  Future<void> initPaymentRequest() async {
-    _paymentRequest.setIsSandBox(true);
-    _paymentRequest.setAmount(1000);
+  Future<void> initPaymentRequest(int finalPrice) async {
+    _paymentRequest.setIsSandBox(false);
+    _paymentRequest.setAmount(finalPrice);
     _paymentRequest.setDescription('it is my first payment request!');
     _paymentRequest.setMerchantID('d645fba8-1b29-11ea-be59-000c295eb8fc');
     _paymentRequest.setCallbackURL('expertflutter://shop');
 
-    /* linkStream.listen(
+    linkStream.listen(
       (deeplink) {
         if (deeplink!.toLowerCase().contains('authority')) {
           authority = deeplink.extractValueFromQuery('Authority');
@@ -34,7 +36,7 @@ class ZarinPalPaymentHandler extends PaymentHandler {
           verifyPaymentRequest();
         }
       },
-    );*/
+    );
   }
 
   @override

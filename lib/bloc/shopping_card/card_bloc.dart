@@ -21,11 +21,18 @@ class CardBloc extends Bloc<CardEvent, CardState> {
     });
 
     on<CardPaymentInitialEvent>((event, emit) async {
-      _zarinPalPaymentHandler.initPaymentRequest();
+      final finalPrice = await _localRepository.getShoppingCardFinalPrice();
+
+      _zarinPalPaymentHandler.initPaymentRequest(finalPrice);
     });
 
     on<CardPaymentRequestEvent>((event, emit) async {
       _zarinPalPaymentHandler.sendPaymentRequest();
+    });
+
+    on<CardRemoveProductEvent>((event, emit) {
+      _localRepository.removeProduct(event.index);
+      emit(CardUpdateState());
     });
   }
 }

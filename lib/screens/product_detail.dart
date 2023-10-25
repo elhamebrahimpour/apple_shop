@@ -13,6 +13,7 @@ import 'package:apple_shop/data/model/product_properties.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/data/model/variant_types.dart';
 import 'package:apple_shop/di/api_di.dart';
+import 'package:apple_shop/utils/extensions/int_extension.dart';
 import 'package:apple_shop/utils/extensions/string_extension.dart';
 import 'package:apple_shop/widgets/cached_widget.dart';
 import 'package:apple_shop/widgets/comment_bottomsheet.dart';
@@ -126,8 +127,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              AddToCartButton(widget.product),
-                              const ProductPriceTag(),
+                              AddToCartButton(
+                                widget.product,
+                              ),
+                              ProductPriceTag(
+                                widget.product,
+                              ),
                             ],
                           ),
                         ),
@@ -372,25 +377,28 @@ class GetUserOpinion extends StatelessWidget {
                   : Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        Container(
+                        SizedBox(
+                          width: 80,
                           height: 26,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            color: Colors.transparent,
-                          ),
-                          child: SizedBox(
-                            width: 80,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount:
-                                  comments.length > 3 ? 3 : comments.length,
-                              itemBuilder: (context, index) {
-                                return comments[index].avatar.isEmpty
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount:
+                                comments.length > 3 ? 3 : comments.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8),
+                                  ),
+                                ),
+                                child: comments[index].avatar.isEmpty
                                     ? Image.asset('images/avatar.png')
                                     : ImageCachedWidget(
-                                        imageUrl: comments[index].userAvatar);
-                              },
-                            ),
+                                        imageUrl: comments[index].userAvatar,
+                                      ),
+                              );
+                            },
                           ),
                         ),
                         Positioned(
@@ -734,7 +742,9 @@ class SingleProductName extends StatelessWidget {
 }
 
 class ProductPriceTag extends StatelessWidget {
-  const ProductPriceTag({
+  Product product;
+  ProductPriceTag(
+    this.product, {
     Key? key,
   }) : super(key: key);
 
@@ -780,21 +790,21 @@ class ProductPriceTag extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    const Column(
+                    Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '46.800.000',
-                          style: TextStyle(
+                          product.price.convertToPrice(),
+                          style: const TextStyle(
                               fontFamily: 'sm',
                               color: AppColors.whiteColor,
                               fontSize: 12,
                               decoration: TextDecoration.lineThrough),
                         ),
                         Text(
-                          '45.000.000',
-                          style: TextStyle(
+                          product.realPrice.convertToPrice(),
+                          style: const TextStyle(
                               fontFamily: 'sm',
                               color: AppColors.whiteColor,
                               fontSize: 14),
