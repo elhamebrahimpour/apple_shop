@@ -122,6 +122,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       //price tag and add to card section
                       SliverToBoxAdapter(
                         child: Padding(
+                          padding: const EdgeInsets.only(top: 22),
+                          child: Divider(
+                            thickness: 2,
+                            color: AppColors.whiteColor.withOpacity(0.5),
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 22, vertical: 22),
                           child: Row(
@@ -374,7 +383,25 @@ class GetUserOpinion extends StatelessWidget {
               ),
               comments.isEmpty
                   ? Container()
-                  : Stack(
+                  : Container(
+                      height: 28,
+                      width: 32,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: AppColors.blueColor,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${comments.length}',
+                          style: const TextStyle(
+                            color: AppColors.whiteColor,
+                            fontFamily: 'sb',
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+              /*Stack(
                       clipBehavior: Clip.none,
                       children: [
                         SizedBox(
@@ -382,8 +409,7 @@ class GetUserOpinion extends StatelessWidget {
                           height: 26,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount:
-                                comments.length > 3 ? 3 : comments.length,
+                            itemCount: comments.length < 3 ? comments.length : 3,
                             itemBuilder: (context, index) {
                               return Container(
                                 decoration: const BoxDecoration(
@@ -403,7 +429,7 @@ class GetUserOpinion extends StatelessWidget {
                         ),
                         Positioned(
                           right: comments.length <= 3
-                              ? comments.length * 22
+                              ? comments.length * 2
                               : 3 * 24,
                           child: Container(
                             height: 26,
@@ -425,7 +451,7 @@ class GetUserOpinion extends StatelessWidget {
                           ),
                         )
                       ],
-                    ),
+                    ),*/
               const Spacer(),
               const Text(
                 'مشاهده ',
