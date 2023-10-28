@@ -15,6 +15,7 @@ import 'package:apple_shop/data/repository/comment_repository.dart';
 import 'package:apple_shop/data/repository/product_category_repository.dart';
 import 'package:apple_shop/data/repository/product_detail_repository.dart';
 import 'package:apple_shop/data/repository/product_repository.dart';
+import 'package:apple_shop/utils/dio_provider.dart';
 import 'package:apple_shop/utils/payment_handler.dart';
 import 'package:apple_shop/utils/url_handler.dart';
 import 'package:dio/dio.dart';
@@ -50,12 +51,11 @@ Future<void> _initComponents() async {
       serviceLocator.get(),
     ),
   );
-
-  serviceLocator.registerSingleton<Dio>(
-      Dio(BaseOptions(baseUrl: 'http://startflutter.ir/api/')));
-
+  
   serviceLocator.registerSingleton<SharedPreferences>(
       await SharedPreferences.getInstance());
+
+  serviceLocator.registerSingleton<Dio>(DioProvider().createDio());
 }
 
 //app datasources
