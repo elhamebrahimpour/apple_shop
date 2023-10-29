@@ -148,15 +148,16 @@ class LoginScreen extends StatelessWidget {
                           );
                         }
                         if (state is AuthResponseState) {
-                          Text text = const Text('');
-                          state.response.fold((error) {
-                            text = Text(error);
-                          }, (successfull) {
-                            text = Text(successfull);
-                          });
-                          return text;
+                          state.response.fold(
+                            (error) {
+                              Text(error);
+                            },
+                            (successfull) {
+                              Text(successfull);
+                            },
+                          );
                         }
-                        return const Text('Unknown Error!');
+                        return Container();
                       }),
                     )
                   ],

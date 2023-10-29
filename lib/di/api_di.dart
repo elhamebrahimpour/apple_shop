@@ -51,11 +51,11 @@ Future<void> _initComponents() async {
       serviceLocator.get(),
     ),
   );
-  
+
   serviceLocator.registerSingleton<SharedPreferences>(
       await SharedPreferences.getInstance());
 
-  serviceLocator.registerSingleton<Dio>(DioProvider().createDio());
+  serviceLocator.registerSingleton<Dio>(DioProvider.createDioWithHeader());
 }
 
 //app datasources

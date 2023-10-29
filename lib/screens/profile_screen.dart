@@ -1,6 +1,13 @@
+import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
+import 'package:apple_shop/di/api_di.dart';
+import 'package:apple_shop/main.dart';
+import 'package:apple_shop/screens/login_screen.dart';
+import 'package:apple_shop/screens/main_screens.dart';
+import 'package:apple_shop/utils/auth_manager.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -50,6 +57,45 @@ class ProfileScreen extends StatelessWidget {
                     (index) => list[index],
                   ),
                 ],
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  AuthManager.logOut();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return BlocProvider(
+                          create: (context) {
+                            var authBloc = AuthBloc(
+                              serviceLocator.get(),
+                            );
+                            //use this stream and state to navigate
+                            //to the main parts of the app after login
+                            authBloc.stream.forEach(
+                              (currentState) {
+                                if (currentState is AuthResponseState) {
+                                  navigatorGlobalKey.currentState
+                                      ?.pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return const DashboardScreen();
+                                      },
+                                    ),
+                                  );
+                                }
+                              },
+                            );
+
+                            return authBloc;
+                          },
+                          child: LoginScreen(),
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: const Text('خروج'),
               ),
               const Spacer(),
               const Text(

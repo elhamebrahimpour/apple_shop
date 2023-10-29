@@ -11,14 +11,14 @@ import 'package:apple_shop/screens/shopping_card_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class MainScreens extends StatefulWidget {
-  const MainScreens({super.key});
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
 
   @override
-  State<MainScreens> createState() => _MainScreensState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _MainScreensState extends State<MainScreens> {
+class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedBottomNavigationItem = 3;
 
   @override

@@ -4,6 +4,8 @@ import 'package:apple_shop/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
+GlobalKey<NavigatorState> navigatorGlobalKey = GlobalKey<NavigatorState>();
+
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CardModelAdapter());
@@ -24,9 +26,10 @@ class MyApplication extends StatefulWidget {
 class _MyApplicationState extends State<MyApplication> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      navigatorKey: navigatorGlobalKey,
+      home: const SplashScreen(),
     );
   }
 }

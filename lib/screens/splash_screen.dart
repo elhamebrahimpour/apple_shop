@@ -1,6 +1,8 @@
 import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/login_screen.dart';
+import 'package:apple_shop/screens/main_screens.dart';
+import 'package:apple_shop/utils/auth_manager.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -77,7 +79,7 @@ class StartIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => navigateToMainScreen(context),
+      onTap: () => navigateToLoginScreen(context),
       child: Container(
         margin: const EdgeInsets.only(right: 22, bottom: 70),
         height: 70,
@@ -169,22 +171,19 @@ class LogoWidget extends StatelessWidget {
   }
 }
 
-Future navigateToMainScreen(BuildContext context) {
-  return Future.delayed(
-    const Duration(seconds: 0),
-    () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) {
-            return BlocProvider(
-              create: (context) => AuthBloc(
-                serviceLocator.get(),
-              ),
-              child: LoginScreen(),
-            );
-          },
-        ),
-      );
-    },
+Future navigateToLoginScreen(BuildContext context) {
+  return Navigator.of(context).pushReplacement(
+    MaterialPageRoute(
+      builder: (context) {
+        return AuthManager.isUserLoggedin()
+            ? const DashboardScreen()
+            : BlocProvider(
+                create: (context) => AuthBloc(
+                  serviceLocator.get(),
+                ),
+                child: LoginScreen(),
+              );
+      },
+    ),
   );
 }
