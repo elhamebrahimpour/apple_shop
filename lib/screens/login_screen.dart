@@ -4,6 +4,9 @@ import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:apple_shop/screens/main_screens.dart';
+
+import 'error_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -150,10 +153,30 @@ class LoginScreen extends StatelessWidget {
                         if (state is AuthResponseState) {
                           state.response.fold(
                             (error) {
-                              Text(error);
+                              WidgetsBinding.instance.addPostFrameCallback(
+                                (timeStamp) {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return const ErrorScreen();
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
                             },
                             (successfull) {
-                              Text(successfull);
+                              WidgetsBinding.instance.addPostFrameCallback(
+                                (timeStamp) {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return const DashboardScreen();
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
                             },
                           );
                         }

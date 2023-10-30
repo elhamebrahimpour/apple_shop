@@ -1,6 +1,7 @@
 import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/main.dart';
+import 'package:apple_shop/screens/error_screen.dart';
 import 'package:apple_shop/screens/login_screen.dart';
 import 'package:apple_shop/screens/main_screens.dart';
 import 'package:apple_shop/utils/auth_manager.dart';
@@ -72,20 +73,31 @@ class ProfileScreen extends StatelessWidget {
                             );
                             //use this stream and state to navigate
                             //to the main parts of the app after login
-                            authBloc.stream.forEach(
+                            /*  authBloc.stream.forEach(
                               (currentState) {
                                 if (currentState is AuthResponseState) {
-                                  navigatorGlobalKey.currentState
-                                      ?.pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return const DashboardScreen();
-                                      },
+                                  currentState.response.fold(
+                                    (error) => navigatorGlobalKey.currentState
+                                        ?.pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return const ErrorScreen();
+                                        },
+                                      ),
+                                    ),
+                                    (response) => navigatorGlobalKey
+                                        .currentState
+                                        ?.pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return const DashboardScreen();
+                                        },
+                                      ),
                                     ),
                                   );
                                 }
                               },
-                            );
+                            );*/
 
                             return authBloc;
                           },

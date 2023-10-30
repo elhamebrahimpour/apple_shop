@@ -392,7 +392,7 @@ class GetUserOpinion extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          '${comments.length}',
+                          '${comments.length >= 20 ? '+ 20' : comments.length}',
                           style: const TextStyle(
                             color: AppColors.whiteColor,
                             fontFamily: 'sb',

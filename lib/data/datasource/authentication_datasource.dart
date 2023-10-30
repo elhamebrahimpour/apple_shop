@@ -1,4 +1,5 @@
 import 'package:apple_shop/utils/api_exception.dart';
+import 'package:apple_shop/utils/auth_manager.dart';
 import 'package:apple_shop/utils/dio_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/foundation.dart';
 abstract class IAuthenticationDatasource {
   Future<void> register(
       String username, String password, String passwordConfirm);
+
   Future<String> login(String username, String password);
 }
 
@@ -49,6 +51,7 @@ class AuthenticationRemoteDatasource implements IAuthenticationDatasource {
         },
       );
       if (response.statusCode == 200) {
+        AuthManager.saveUserId(response.data['record']['id']);
         return response.data?['token'];
       }
     } on DioError catch (e) {

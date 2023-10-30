@@ -17,7 +17,9 @@ class CommentBottomsheet extends StatelessWidget {
     return BlocConsumer<CommentBloc, CommentState>(
       listener: (context, state) {
         if (state is CommentUpdateResponseState) {
-          context.read<CommentBloc>().add(CommentInitializedEvent(productId));
+          context.read<CommentBloc>().add(
+                CommentInitializedEvent(productId),
+              );
         }
       },
       builder: (context, snapshot) {
