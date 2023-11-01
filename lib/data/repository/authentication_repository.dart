@@ -8,6 +8,7 @@ import 'package:dartz/dartz.dart';
 abstract class IAuthenticationRepository {
   Future<Either<String, String>> registerUser(
       String username, String password, String passwordConfirm);
+      
   Future<Either<String, String>> loginUser(String username, String password);
 }
 

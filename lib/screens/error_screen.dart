@@ -9,11 +9,27 @@ class ErrorScreen extends StatelessWidget {
     return const Scaffold(
       backgroundColor: AppColors.backColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            Text('401'),
-            Text('You don\'t have an access to this page'),
-          ],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error,
+                size: 42,
+                color: AppColors.redColor,
+              ),
+              SizedBox(
+                height: 18,
+              ),
+              Text(
+                'Connection Error!',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'sb',
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,9 +1,6 @@
 import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
 import 'package:apple_shop/di/api_di.dart';
-import 'package:apple_shop/main.dart';
-import 'package:apple_shop/screens/error_screen.dart';
 import 'package:apple_shop/screens/login_screen.dart';
-import 'package:apple_shop/screens/main_screens.dart';
 import 'package:apple_shop/utils/auth_manager.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';

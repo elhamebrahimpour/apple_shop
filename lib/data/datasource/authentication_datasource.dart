@@ -2,7 +2,6 @@ import 'package:apple_shop/utils/api_exception.dart';
 import 'package:apple_shop/utils/auth_manager.dart';
 import 'package:apple_shop/utils/dio_provider.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 //this class sends request to the server and handles the error via sending request
 //DataSource
@@ -30,10 +29,10 @@ class AuthenticationRemoteDatasource implements IAuthenticationDatasource {
           'passwordConfirm': passwordConfirm
         },
       );
-      if (kDebugMode) {
-        print(response.statusCode);
+      if (response.statusCode == 200) {
+        AuthManager.saveUserId(response.data['id']);
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       throw ApiException(e.response!.statusCode, e.response!.data['message']);
     } catch (ex) {
       throw ApiException(0, 'unknown error!');
@@ -54,7 +53,7 @@ class AuthenticationRemoteDatasource implements IAuthenticationDatasource {
         AuthManager.saveUserId(response.data['record']['id']);
         return response.data?['token'];
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       throw ApiException(e.response?.statusCode, e.response?.data['message']);
     } catch (ex) {
       throw ApiException(0, 'unknown error!');
