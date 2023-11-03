@@ -20,255 +20,239 @@ class LoginScreen extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: AppColors.blueColor,
-        body: Column(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'images/icon_application.png',
-                    height: 100,
-                    width: 100,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(
-                    'اپل شاپ',
-                    style: TextStyle(
-                        color: AppColors.whiteColor,
-                        fontSize: 24,
-                        fontFamily: 'sb'),
-                  )
-                ],
-              ),
-            ),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.only(
-                  left: 13,
-                  right: 13,
-                  top: 32,
-                  bottom: 8,
+        backgroundColor: AppColors.whiteColor,
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'images/login_photo.jpg',
+                  height: 200,
+                  width: 200,
                 ),
-                decoration: BoxDecoration(
-                  color: AppColors.whiteColor,
-                  borderRadius: BorderRadius.circular(20),
+                const SizedBox(
+                  height: 60,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: 52,
-                      child: TextField(
-                        controller: _userNameTextController,
-                        decoration: const InputDecoration(
-                          labelText: 'نام کاربری',
-                          labelStyle: TextStyle(
-                              color: AppColors.blackColor,
-                              fontSize: 16,
-                              fontFamily: 'sm'),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
-                            ),
-                            borderSide: BorderSide(
-                                color: AppColors.blackColor, width: 2),
+                CredentialTextField(
+                  userNameTextController: _userNameTextController,
+                  passwordTextController: _passwordTextController,
+                ),
+                const SizedBox(
+                  height: 60,
+                ),
+                BlocBuilder<AuthBloc, AuthState>(
+                  builder: ((context, state) {
+                    if (state is AuthInitialState) {
+                      return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.blue,
+                          textStyle: const TextStyle(
+                            fontSize: 18,
+                            fontFamily: 'sb',
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
-                            ),
-                            borderSide: BorderSide(
-                              color: AppColors.blueColor,
-                              width: 3,
-                            ),
-                          ),
+                          minimumSize: const Size(210, 48),
                         ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      height: 52,
-                      child: TextField(
-                        controller: _passwordTextController,
-                        decoration: const InputDecoration(
-                          labelText: 'رمزعبور',
-                          labelStyle: TextStyle(
-                              color: AppColors.blackColor,
-                              fontSize: 16,
-                              fontFamily: 'sm'),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
+                        onPressed: () {
+                          BlocProvider.of<AuthBloc>(context).add(
+                            AuthLoginRequest(
+                              _userNameTextController.text,
+                              _passwordTextController.text,
                             ),
-                            borderSide: BorderSide(
-                                color: AppColors.blackColor, width: 2),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
-                            ),
-                            borderSide: BorderSide(
-                              color: AppColors.blueColor,
-                              width: 3,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    BlocBuilder<AuthBloc, AuthState>(
-                      builder: ((context, state) {
-                        if (state is AuthInitialState) {
-                          return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.blueColor,
-                              textStyle: const TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'sb',
-                              ),
-                              minimumSize: const Size(200, 48),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                            ),
-                            onPressed: () {
-                              BlocProvider.of<AuthBloc>(context).add(
-                                AuthLoginRequest(
-                                  _userNameTextController.text,
-                                  _passwordTextController.text,
+                          );
+                        },
+                        child: const Text('ورود به حساب کاربری'),
+                      );
+                    }
+                    if (state is AuthLoadingState) {
+                      return const CircularProgressIndicator(
+                        color: AppColors.blueColor,
+                        strokeWidth: 4,
+                      );
+                    }
+                    if (state is AuthResponseState) {
+                      state.response.fold(
+                        (error) {
+                          WidgetsBinding.instance.addPostFrameCallback(
+                            (timeStamp) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return const ErrorScreen();
+                                  },
                                 ),
                               );
                             },
-                            child: const Text('ورود به حساب کاربری'),
                           );
-                        }
-                        if (state is AuthLoadingState) {
-                          return const CircularProgressIndicator(
-                            color: AppColors.blueColor,
-                            strokeWidth: 4,
-                          );
-                        }
-                        if (state is AuthResponseState) {
-                          state.response.fold(
-                            (error) {
-                              WidgetsBinding.instance.addPostFrameCallback(
-                                (timeStamp) {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return const ErrorScreen();
-                                      },
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            (successfull) {
-                              WidgetsBinding.instance.addPostFrameCallback(
-                                (timeStamp) {
-                                  Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return const DashboardScreen();
-                                      },
-                                    ),
-                                  );
-                                },
+                        },
+                        (successfull) {
+                          WidgetsBinding.instance.addPostFrameCallback(
+                            (timeStamp) {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return const DashboardScreen();
+                                  },
+                                ),
                               );
                             },
                           );
-                        }
-                        return Container();
-                      }),
+                        },
+                      );
+                    }
+                    return Container();
+                  }),
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'آیا حساب کاربری ندارید؟',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'sb',
+                        color: AppColors.greyColor,
+                      ),
                     ),
-                    const Spacer(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'آیا حساب کاربری ندارید؟',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'sb',
-                            color: AppColors.greyColor,
-                          ),
-                        ),
-                        OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.transparent),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return BlocProvider(
-                                    create: (context) {
-                                      var authBloc = AuthBloc(
-                                        serviceLocator.get(),
-                                      );
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.transparent),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return BlocProvider(
+                                create: (context) {
+                                  var authBloc = AuthBloc(
+                                    serviceLocator.get(),
+                                  );
 
-                                      authBloc.stream.forEach(
-                                        (currentState) {
-                                          if (currentState
-                                              is AuthResponseState) {
-                                            currentState.response.fold(
-                                              (error) => Navigator.of(context)
-                                                  .pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const ErrorScreen();
-                                                  },
-                                                ),
-                                              ),
-                                              (response) =>
-                                                  Navigator.of(context)
-                                                      .pushReplacement(
-                                                MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return const DashboardScreen();
-                                                  },
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                      );
-
-                                      return authBloc;
+                                  authBloc.stream.forEach(
+                                    (currentState) {
+                                      if (currentState is AuthResponseState) {
+                                        currentState.response.fold(
+                                          (error) => Navigator.of(context)
+                                              .pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (context) {
+                                                return const ErrorScreen();
+                                              },
+                                            ),
+                                          ),
+                                          (response) => Navigator.of(context)
+                                              .pushReplacement(
+                                            MaterialPageRoute(
+                                              builder: (context) {
+                                                return const DashboardScreen();
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      }
                                     },
-                                    child: RegisterScreen(),
                                   );
+
+                                  return authBloc;
                                 },
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'ثبت نام',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: 'sb',
-                              color: AppColors.blueColor,
-                            ),
+                                child: RegisterScreen(),
+                              );
+                            },
                           ),
-                        )
-                      ],
-                    ),
+                        );
+                      },
+                      child: const Text(
+                        'ثبت نام',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: 'sb',
+                          color: AppColors.blueColor,
+                        ),
+                      ),
+                    )
                   ],
                 ),
-              ),
-            )
-          ],
+              ],
+            ),
+          ),
         ),
       ),
+    );
+  }
+}
+
+class CredentialTextField extends StatelessWidget {
+  const CredentialTextField({
+    super.key,
+    required TextEditingController userNameTextController,
+    required TextEditingController passwordTextController,
+  })  : _userNameTextController = userNameTextController,
+        _passwordTextController = passwordTextController;
+
+  final TextEditingController _userNameTextController;
+  final TextEditingController _passwordTextController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'نام کاربری:',
+          style: TextStyle(
+            color: AppColors.blackColor,
+            fontSize: 14,
+            fontFamily: 'sm',
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Container(
+          padding: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            color: AppColors.greyColor.withOpacity(0.2),
+          ),
+          child: TextField(
+            controller: _userNameTextController,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        const Text(
+          'رمز عبور:',
+          style: TextStyle(
+            color: AppColors.blackColor,
+            fontSize: 14,
+            fontFamily: 'sm',
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Container(
+          padding: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            color: AppColors.greyColor.withOpacity(0.2),
+          ),
+          child: TextField(
+            controller: _passwordTextController,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
