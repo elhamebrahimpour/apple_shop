@@ -25,12 +25,13 @@ class AuthenticationRemoteDatasource implements IAuthenticationDatasource {
         'collections/users/records',
         data: {
           'username': username,
+          'name': username,
           'password': password,
           'passwordConfirm': passwordConfirm
         },
       );
       if (response.statusCode == 200) {
-        AuthManager.saveUserId(response.data['id']);
+        login(username, password);
       }
     } on DioException catch (e) {
       throw ApiException(e.response!.statusCode, e.response!.data['message']);
@@ -51,6 +52,9 @@ class AuthenticationRemoteDatasource implements IAuthenticationDatasource {
       );
       if (response.statusCode == 200) {
         AuthManager.saveUserId(response.data['record']['id']);
+
+        AuthManager.saveToken(response.data?['token']);
+
         return response.data?['token'];
       }
     } on DioException catch (e) {

@@ -19,7 +19,7 @@ class CommentDatasource extends ICommentDatasource {
     try {
       Map<String, dynamic> queryParams = {
         'filter': 'product_id="$productId"',
-        'page': 1,
+        'perPage': 100,
         'expand': 'user_id',
       };
 
@@ -31,7 +31,7 @@ class CommentDatasource extends ICommentDatasource {
       return response.data['items']
           .map<Comments>((jsonObject) => Comments.fromJsonMap(jsonObject))
           .toList();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       throw ApiException(e.response!.statusCode, e.response!.data['message']);
     } catch (ex) {
       throw ApiException(0, 'unknown error!');
@@ -51,7 +51,7 @@ class CommentDatasource extends ICommentDatasource {
           'text': comment,
         },
       );
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       throw ApiException(e.response!.statusCode, e.response!.data['message']);
     } catch (ex) {
       throw ApiException(0, ex.toString());

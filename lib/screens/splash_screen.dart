@@ -1,11 +1,8 @@
-import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
-import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/login_screen.dart';
 import 'package:apple_shop/screens/main_screens.dart';
 import 'package:apple_shop/utils/auth_manager.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -177,12 +174,7 @@ Future navigateToLoginScreen(BuildContext context) {
       builder: (context) {
         return AuthManager.isUserLoggedin()
             ? const DashboardScreen()
-            : BlocProvider(
-                create: (context) => AuthBloc(
-                  serviceLocator.get(),
-                ),
-                child: LoginScreen(),
-              );
+            : LoginScreen();
       },
     ),
   );

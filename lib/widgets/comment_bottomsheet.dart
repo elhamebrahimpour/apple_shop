@@ -88,7 +88,7 @@ class CommentBottomsheet extends StatelessWidget {
                                           children: [
                                             Text(
                                               comments[index].userName.isEmpty
-                                                  ? 'کاربر'
+                                                  ? 'کاربر مهمان'
                                                   : comments[index].userName,
                                               textAlign: TextAlign.end,
                                               style: const TextStyle(
