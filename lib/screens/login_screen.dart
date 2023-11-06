@@ -4,12 +4,11 @@ import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/register_screen.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
+import 'package:apple_shop/utils/messenger.dart';
 import 'package:apple_shop/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:apple_shop/screens/main_screens.dart';
-
-import 'error_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
@@ -74,68 +73,62 @@ class LoginView extends StatelessWidget {
             CustomTextField(
               textEditingController: _passwordTextController,
               fieldString: 'رمز عبور:',
+              isPassword: true,
             ),
             const SizedBox(
               height: 60,
             ),
-            BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-              if (state is AuthResponseState) {
-                state.response.fold(
-                  (error) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const ErrorScreen();
-                        },
-                      ),
-                    );
-                  },
-                  (successfull) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const DashboardScreen();
-                        },
-                      ),
-                    );
-                  },
-                );
-              }
-            }, builder: (context, snapshot) {
-              return BlocBuilder<AuthBloc, AuthState>(
-                builder: ((context, state) {
-                  if (state is AuthInitialState) {
-                    return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.blue,
-                        textStyle: const TextStyle(
-                          fontSize: 18,
-                          fontFamily: 'sb',
+            BlocConsumer<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthResponseState) {
+                  state.response.fold(
+                    (error) {
+                      _userNameTextController.clear();
+                      _passwordTextController.clear();
+                      Messenger.showErrorMessenger(context, error);
+                    },
+                    (successfull) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const DashboardScreen();
+                          },
                         ),
-                        minimumSize: const Size(210, 48),
-                      ),
-                      onPressed: () {
-                        BlocProvider.of<AuthBloc>(context).add(
-                          AuthLoginRequest(
-                            _userNameTextController.text,
-                            _passwordTextController.text,
-                          ),
-                        );
-                      },
-                      child: const Text('ورود به حساب کاربری'),
-                    );
-                  }
-                  if (state is AuthLoadingState) {
-                    return const CircularProgressIndicator(
-                      color: AppColors.blueColor,
-                      strokeWidth: 4,
-                    );
-                  }
+                      );
+                    },
+                  );
+                }
+              },
+              builder: (context, snapshot) {
+                return BlocBuilder<AuthBloc, AuthState>(
+                  builder: ((context, state) {
+                    if (state is AuthInitialState) {
+                      return LoginActionButton(
+                        userNameTextController: _userNameTextController,
+                        passwordTextController: _passwordTextController,
+                      );
+                    }
+                    if (state is AuthLoadingState) {
+                      return const CircularProgressIndicator(
+                        color: AppColors.blueColor,
+                        strokeWidth: 4,
+                      );
+                    }
+                    if (state is AuthResponseState) {
+                      Widget widget = Container();
 
-                  return Container();
-                }),
-              );
-            }),
+                      widget = LoginActionButton(
+                        userNameTextController: _userNameTextController,
+                        passwordTextController: _passwordTextController,
+                      );
+
+                      return widget;
+                    }
+                    return Container();
+                  }),
+                );
+              },
+            ),
             const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -179,3 +172,37 @@ class LoginView extends StatelessWidget {
   }
 }
 
+class LoginActionButton extends StatelessWidget {
+  const LoginActionButton({
+    super.key,
+    required TextEditingController userNameTextController,
+    required TextEditingController passwordTextController,
+  })  : _userNameTextController = userNameTextController,
+        _passwordTextController = passwordTextController;
+
+  final TextEditingController _userNameTextController;
+  final TextEditingController _passwordTextController;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.blue,
+        textStyle: const TextStyle(
+          fontSize: 18,
+          fontFamily: 'sb',
+        ),
+        minimumSize: const Size(210, 48),
+      ),
+      onPressed: () {
+        BlocProvider.of<AuthBloc>(context).add(
+          AuthLoginRequest(
+            _userNameTextController.text,
+            _passwordTextController.text,
+          ),
+        );
+      },
+      child: const Text('ورود به حساب کاربری'),
+    );
+  }
+}

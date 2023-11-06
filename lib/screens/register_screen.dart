@@ -1,13 +1,12 @@
 // ignore_for_file: avoid_print
 import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
 import 'package:apple_shop/di/api_di.dart';
-import 'package:apple_shop/screens/error_screen.dart';
 import 'package:apple_shop/screens/login_screen.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
+import 'package:apple_shop/utils/messenger.dart';
 import 'package:apple_shop/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'main_screens.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -78,6 +77,7 @@ class RegisterView extends StatelessWidget {
             CustomTextField(
               textEditingController: _passwordTextController,
               fieldString: 'رمز عبور:',
+              isPassword: true,
             ),
             const SizedBox(
               height: 20,
@@ -85,6 +85,7 @@ class RegisterView extends StatelessWidget {
             CustomTextField(
               textEditingController: _passwordConfirmTextController,
               fieldString: 'تکرار رمز عبور:',
+              isPassword: true,
             ),
             const SizedBox(
               height: 60,
@@ -94,13 +95,10 @@ class RegisterView extends StatelessWidget {
                 if (state is AuthResponseState) {
                   state.response.fold(
                     (error) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const ErrorScreen();
-                          },
-                        ),
-                      );
+                      _userNameTextController.clear();
+                      _passwordTextController.clear();
+                      _passwordConfirmTextController.clear();
+                      Messenger.showErrorMessenger(context, error);
                     },
                     (successfull) {
                       Navigator.of(context).pushReplacement(
@@ -118,25 +116,11 @@ class RegisterView extends StatelessWidget {
                 return BlocBuilder<AuthBloc, AuthState>(
                   builder: ((context, state) {
                     if (state is AuthInitialState) {
-                      return ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.blue,
-                          textStyle: const TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'sb',
-                          ),
-                          minimumSize: const Size(210, 48),
-                        ),
-                        onPressed: () {
-                          BlocProvider.of<AuthBloc>(context).add(
-                            AuthRegisterRequest(
-                              _userNameTextController.text,
-                              _passwordTextController.text,
-                              _passwordConfirmTextController.text,
-                            ),
-                          );
-                        },
-                        child: const Text('ثبت نام'),
+                      return RegisterActionButton(
+                        userNameTextController: _userNameTextController,
+                        passwordTextController: _passwordTextController,
+                        passwordConfirmTextController:
+                            _passwordConfirmTextController,
                       );
                     }
                     if (state is AuthLoadingState) {
@@ -144,6 +128,18 @@ class RegisterView extends StatelessWidget {
                         color: AppColors.blueColor,
                         strokeWidth: 4,
                       );
+                    }
+                    if (state is AuthResponseState) {
+                      Widget widget = Container();
+
+                      widget = RegisterActionButton(
+                        userNameTextController: _userNameTextController,
+                        passwordTextController: _passwordTextController,
+                        passwordConfirmTextController:
+                            _passwordConfirmTextController,
+                      );
+
+                      return widget;
                     }
 
                     return Container();
@@ -190,6 +186,45 @@ class RegisterView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class RegisterActionButton extends StatelessWidget {
+  const RegisterActionButton({
+    super.key,
+    required TextEditingController userNameTextController,
+    required TextEditingController passwordTextController,
+    required TextEditingController passwordConfirmTextController,
+  })  : _userNameTextController = userNameTextController,
+        _passwordTextController = passwordTextController,
+        _passwordConfirmTextController = passwordConfirmTextController;
+
+  final TextEditingController _userNameTextController;
+  final TextEditingController _passwordTextController;
+  final TextEditingController _passwordConfirmTextController;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.blue,
+        textStyle: const TextStyle(
+          fontSize: 18,
+          fontFamily: 'sb',
+        ),
+        minimumSize: const Size(210, 48),
+      ),
+      onPressed: () {
+        BlocProvider.of<AuthBloc>(context).add(
+          AuthRegisterRequest(
+            _userNameTextController.text,
+            _passwordTextController.text,
+            _passwordConfirmTextController.text,
+          ),
+        );
+      },
+      child: const Text('ثبت نام'),
     );
   }
 }

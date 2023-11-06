@@ -34,7 +34,11 @@ class AuthenticationRemoteDatasource implements IAuthenticationDatasource {
         login(username, password);
       }
     } on DioException catch (e) {
-      throw ApiException(e.response!.statusCode, e.response!.data['message']);
+      throw ApiException(
+        e.response!.statusCode,
+        e.response!.data['message'],
+        response: e.response,
+      );
     } catch (ex) {
       throw ApiException(0, 'unknown error!');
     }

@@ -1,4 +1,5 @@
 import 'package:apple_shop/bloc/home/home_bloc.dart';
+import 'package:apple_shop/screens/error_screen.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';

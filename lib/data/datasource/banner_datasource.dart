@@ -17,10 +17,13 @@ class BannerRemoteDatasource extends IBannerDatasource {
           .map<AdvertiseBanner>(
               (jsonObject) => AdvertiseBanner.fromJson(jsonObject))
           .toList();
-
-      // ignore: deprecated_member_use
-    } on DioError catch (e) {
-      throw ApiException(e.response!.statusCode, e.response!.data['message']);
+    } on DioException catch (e) {
+      throw ApiException(
+        e.response!.statusCode,
+        e.response!.data['message'] == 'Not Found.'
+            ? 'خطای شبکه'
+            : e.response!.data['message'],
+      );
     } catch (ex) {
       throw ApiException(0, 'unknown error!');
     }
