@@ -117,9 +117,20 @@ class LoginView extends StatelessWidget {
                     if (state is AuthResponseState) {
                       Widget widget = Container();
 
-                      widget = LoginActionButton(
-                        userNameTextController: _userNameTextController,
-                        passwordTextController: _passwordTextController,
+                      state.response.fold(
+                        (error) {
+                          widget = LoginActionButton(
+                            userNameTextController: _userNameTextController,
+                            passwordTextController: _passwordTextController,
+                          );
+                        },
+                        (response) {
+                          widget = const Icon(
+                            Icons.check,
+                            color: AppColors.blueColor,
+                            size: 38,
+                          );
+                        },
                       );
 
                       return widget;

@@ -132,11 +132,22 @@ class RegisterView extends StatelessWidget {
                     if (state is AuthResponseState) {
                       Widget widget = Container();
 
-                      widget = RegisterActionButton(
-                        userNameTextController: _userNameTextController,
-                        passwordTextController: _passwordTextController,
-                        passwordConfirmTextController:
-                            _passwordConfirmTextController,
+                      state.response.fold(
+                        (error) {
+                          widget = RegisterActionButton(
+                            userNameTextController: _userNameTextController,
+                            passwordTextController: _passwordTextController,
+                            passwordConfirmTextController:
+                                _passwordConfirmTextController,
+                          );
+                        },
+                        (response) {
+                          widget = const Icon(
+                            Icons.check,
+                            color: AppColors.blueColor,
+                            size: 38,
+                          );
+                        },
                       );
 
                       return widget;
