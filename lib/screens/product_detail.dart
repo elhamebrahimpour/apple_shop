@@ -921,7 +921,10 @@ class SingleProductAppbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.only(right: 22, left: 22, bottom: 26, top: 6),
+        padding: EdgeInsets.symmetric(
+          horizontal: MediaQuery.of(context).size.height / 42,
+          vertical: MediaQuery.of(context).size.height / 42,
+        ),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           height: 46,

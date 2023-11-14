@@ -143,7 +143,7 @@ class LogoWidget extends StatelessWidget {
           children: [
             Image.asset('images/splash_back.png'),
             Positioned(
-              top: 170,
+              top: 190,
               child: SizedBox(
                 height: 90,
                 width: 90,
@@ -151,7 +151,7 @@ class LogoWidget extends StatelessWidget {
               ),
             ),
             const Positioned(
-              bottom: 160,
+              bottom: 190,
               child: Text(
                 'اپل شاپ',
                 style: TextStyle(

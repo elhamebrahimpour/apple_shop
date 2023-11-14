@@ -3,6 +3,7 @@ import 'package:apple_shop/bloc/authentication/authentication_bloc.dart';
 import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/screens/login_screen.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
+import 'package:apple_shop/utils/extensions/context_extension.dart';
 import 'package:apple_shop/utils/messenger.dart';
 import 'package:apple_shop/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,12 @@ class RegisterView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height / 7,
+          left: 32,
+          right: 32,
+          bottom: 32,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -101,12 +107,8 @@ class RegisterView extends StatelessWidget {
                       Messenger.showErrorMessenger(context, error);
                     },
                     (successfull) {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return const DashboardScreen();
-                          },
-                        ),
+                      context.navigateToScreen(
+                        const DashboardScreen(),
                       );
                     },
                   );
@@ -175,12 +177,8 @@ class RegisterView extends StatelessWidget {
                     side: const BorderSide(color: Colors.transparent),
                   ),
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return LoginScreen();
-                        },
-                      ),
+                    context.navigateToScreen(
+                      LoginScreen(),
                     );
                   },
                   child: const Text(

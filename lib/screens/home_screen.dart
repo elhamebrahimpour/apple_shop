@@ -34,7 +34,9 @@ class HomeScreen extends StatelessWidget {
                     //get search appbar
                     const SliverToBoxAdapter(
                       child: CustomAppBar(
-                          title: 'جستجوی محصولات', searchIconVisibility: true),
+                        title: 'جستجوی محصولات',
+                        searchIconVisibility: true,
+                      ),
                     ),
 
                     //get banners

@@ -16,7 +16,6 @@ void main() async {
   runApp(const MyApplication());
 }
 
-
 class MyApplication extends StatefulWidget {
   const MyApplication({Key? key}) : super(key: key);
 

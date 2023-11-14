@@ -1,6 +1,7 @@
 import 'package:apple_shop/screens/login_screen.dart';
 import 'package:apple_shop/utils/auth_manager.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
+import 'package:apple_shop/utils/extensions/context_extension.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -56,14 +57,17 @@ class ProfileScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   AuthManager.logOut();
-                  Navigator.push(
+                  context.navigateToScreen(
+                    LoginScreen(),
+                  );
+                  /* Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
                         return LoginScreen();
                       },
                     ),
-                  );
+                  );*/
                 },
                 child: const Text('خروج'),
               ),
