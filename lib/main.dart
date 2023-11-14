@@ -10,7 +10,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CardModelAdapter());
   await Hive.openBox<CardModel>('cardBox');
-  //add this here because sharedPref has native codes
+  
   WidgetsFlutterBinding.ensureInitialized();
   await getItInit();
   runApp(const MyApplication());
