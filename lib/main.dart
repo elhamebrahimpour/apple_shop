@@ -10,7 +10,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CardModelAdapter());
   await Hive.openBox<CardModel>('cardBox');
-  
+
   WidgetsFlutterBinding.ensureInitialized();
   await getItInit();
   runApp(const MyApplication());

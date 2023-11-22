@@ -1,9 +1,11 @@
+import 'package:apple_shop/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/screens/login_screen.dart';
 import 'package:apple_shop/utils/auth_manager.dart';
 import 'package:apple_shop/utils/constants/app_colors.dart';
 import 'package:apple_shop/utils/extensions/context_extension.dart';
 import 'package:apple_shop/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -11,6 +13,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var list = const [];
+
     return Scaffold(
       backgroundColor: AppColors.backColor,
       body: SafeArea(
@@ -56,18 +59,14 @@ class ProfileScreen extends StatelessWidget {
               ),
               ElevatedButton(
                 onPressed: () {
+                  BlocProvider.of<CardBloc>(context).add(
+                    CardDeleteBoxEvent(),
+                  );
+
                   AuthManager.logOut();
                   context.navigateToScreen(
                     LoginScreen(),
                   );
-                  /* Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return LoginScreen();
-                      },
-                    ),
-                  );*/
                 },
                 child: const Text('خروج'),
               ),

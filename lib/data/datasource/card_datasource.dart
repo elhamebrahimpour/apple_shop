@@ -12,6 +12,8 @@ abstract class ICardLocalDataSource {
   Future<int> getShoppingCardFinalPrice();
 
   Future<void> removeProduct(int index);
+
+  Future<void> deleteCardBox();
 }
 
 class CardLocalDataSource extends ICardLocalDataSource {
@@ -38,5 +40,10 @@ class CardLocalDataSource extends ICardLocalDataSource {
   @override
   Future<void> removeProduct(int index) async {
     cardBox.deleteAt(index);
+  }
+
+  @override
+  Future<void> deleteCardBox() async {
+    cardBox.clear();
   }
 }

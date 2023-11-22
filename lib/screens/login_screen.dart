@@ -27,9 +27,11 @@ class LoginScreen extends StatelessWidget {
         child: Scaffold(
           backgroundColor: AppColors.whiteColor,
           resizeToAvoidBottomInset: false,
-          body: LoginView(
-            userNameTextController: _userNameTextController,
-            passwordTextController: _passwordTextController,
+          body: SafeArea(
+            child: SingleChildScrollView(
+                child: LoginView(
+                    userNameTextController: _userNameTextController,
+                    passwordTextController: _passwordTextController)),
           ),
         ),
       ),
@@ -53,13 +55,12 @@ class LoginView extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height / 7,
+          top: MediaQuery.of(context).size.height / 9,
           left: 32,
           right: 32,
           bottom: 32,
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
               'images/login_photo.jpg',
@@ -142,7 +143,9 @@ class LoginView extends StatelessWidget {
                 );
               },
             ),
-            const Spacer(),
+            const SizedBox(
+              height: 42,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

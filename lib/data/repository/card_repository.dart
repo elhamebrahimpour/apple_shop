@@ -10,6 +10,8 @@ abstract class ICardLocalRepository {
   Future<int> getShoppingCardFinalPrice();
 
   Future<void> removeProduct(int index);
+
+  Future<void> deleteCardBox();
 }
 
 class CardLocalRepository extends ICardLocalRepository {
@@ -45,5 +47,10 @@ class CardLocalRepository extends ICardLocalRepository {
   @override
   Future<void> removeProduct(int index) async {
     _localDataSource.removeProduct(index);
+  }
+
+  @override
+  Future<void> deleteCardBox() async {
+    _localDataSource.deleteCardBox();
   }
 }

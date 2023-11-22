@@ -34,7 +34,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   List<Widget> getLayouts() {
     return <Widget>[
-      const ProfileScreen(),
+      BlocProvider(
+        create: (context) => serviceLocator.get<CardBloc>(),
+        child: const ProfileScreen(),
+      ),
       BlocProvider(
         create: (context) => serviceLocator.get<CardBloc>()
           ..add(

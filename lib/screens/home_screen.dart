@@ -16,6 +16,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
+      buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
         if (state is HomeLoadingState) {
           return const LoadingAnimation();
@@ -39,12 +40,14 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
 
-                    //get banners
-                    if (state is HomeSuccessResponseState) ...{
+                    if (state is HomeResponseState) ...{
+                      //get banners
                       state.banners.fold((exception) {
                         return SliverToBoxAdapter(
                           child: Center(
-                            child: Text(exception),
+                            child: exception.isNotEmpty
+                                ? const Text('!Couldn\'t load banners')
+                                : const LoadingAnimation(),
                           ),
                         );
                       }, (bannerList) {

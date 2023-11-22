@@ -34,5 +34,9 @@ class CardBloc extends Bloc<CardEvent, CardState> {
       _localRepository.removeProduct(event.index);
       emit(CardUpdateState());
     });
+
+    on<CardDeleteBoxEvent>((event, emit) async {
+      _localRepository.deleteCardBox();
+    });
   }
 }

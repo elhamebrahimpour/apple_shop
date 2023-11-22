@@ -12,3 +12,5 @@ class CardRemoveProductEvent extends CardEvent {
   final int index;
   CardRemoveProductEvent(this.index);
 }
+
+class CardDeleteBoxEvent extends CardEvent {}

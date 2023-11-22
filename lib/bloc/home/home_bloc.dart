@@ -14,20 +14,29 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final IBannerRepository _bannerRepository;
   final ICategoryRepository _categoryRepository;
   final IProductRepository _productRepository;
+
   HomeBloc(
       this._bannerRepository, this._categoryRepository, this._productRepository)
       : super(HomeInitialState()) {
     on<HomeGetRequestedEvent>((event, emit) async {
       emit(HomeLoadingState());
-      var bannerList = await _bannerRepository.getBanners();
-      var categoryList = await _categoryRepository.getCategoryList();
-      var productList = await _productRepository.getProducts();
-      var bestSellerProductList =
-          await _productRepository.getBestSellerProducts();
-      var hotestProductList = await _productRepository.getHotestProducts();
 
-      emit(HomeSuccessResponseState(bannerList, categoryList, productList,
-          bestSellerProductList, hotestProductList));
+      var banners = await _bannerRepository.getBanners();
+      var categories = await _categoryRepository.getCategoryList();
+      var products = await _productRepository.getProducts();
+
+      var bestSellerProducts = await _productRepository.getBestSellerProducts();
+      var hotestProducts = await _productRepository.getHotestProducts();
+
+      emit(
+        HomeResponseState(
+          banners,
+          categories,
+          products,
+          bestSellerProducts,
+          hotestProducts,
+        ),
+      );
     });
   }
 }
