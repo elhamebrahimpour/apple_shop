@@ -11,9 +11,14 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ShoppingCardScreen extends StatelessWidget {
+class ShoppingCardScreen extends StatefulWidget {
   const ShoppingCardScreen({Key? key}) : super(key: key);
 
+  @override
+  State<ShoppingCardScreen> createState() => _ShoppingCardScreenState();
+}
+
+class _ShoppingCardScreenState extends State<ShoppingCardScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CardBloc, CardState>(
