@@ -1,6 +1,6 @@
-import 'package:apple_shop/utils/api_exception.dart';
-import 'package:apple_shop/utils/auth_manager.dart';
-import 'package:apple_shop/utils/dio_provider.dart';
+import 'package:apple_shop/features/utils/api_exception.dart';
+import 'package:apple_shop/features/utils/auth_manager.dart';
+import 'package:apple_shop/features/utils/dio_provider.dart';
 import 'package:dio/dio.dart';
 
 //this class sends request to the server and handles the error via sending request

@@ -1,6 +1,6 @@
 import 'package:apple_shop/data/model/banner.dart';
-import 'package:apple_shop/di/api_di.dart';
-import 'package:apple_shop/utils/api_exception.dart';
+import 'package:apple_shop/features/di/api_di.dart';
+import 'package:apple_shop/features/utils/api_exception.dart';
 import 'package:dio/dio.dart';
 
 abstract class IBannerDatasource {

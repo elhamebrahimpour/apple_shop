@@ -3,8 +3,8 @@ import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
 import 'package:apple_shop/data/model/product_properties.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
-import 'package:apple_shop/di/api_di.dart';
-import 'package:apple_shop/utils/api_exception.dart';
+import 'package:apple_shop/features/di/api_di.dart';
+import 'package:apple_shop/features/utils/api_exception.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class IProductDetailRepository {

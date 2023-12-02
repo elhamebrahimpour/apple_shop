@@ -17,7 +17,7 @@ class CardModel {
   @HiveField(5)
   int price;
   @HiveField(6)
-  int discount_price;
+  int discountPrice;
   @HiveField(7)
   int? realPrice;
   @HiveField(8)
@@ -30,9 +30,9 @@ class CardModel {
     this.name,
     this.thumbnail,
     this.price,
-    this.discount_price,
+    this.discountPrice,
   ) {
-    realPrice = price + discount_price;
+    realPrice = price + discountPrice;
     percent = ((price - realPrice!) / price) * 100;
     //'http://startflutter.ir/api/files/${jsonObject['collectionId']}/${jsonObject['id']}/${jsonObject['thumbnail']}',
   }

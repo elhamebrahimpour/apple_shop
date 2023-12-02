@@ -1,6 +1,6 @@
 import 'package:apple_shop/data/model/card_model.dart';
-import 'package:apple_shop/di/api_di.dart';
-import 'package:apple_shop/screens/splash_screen.dart';
+import 'package:apple_shop/features/di/api_di.dart';
+import 'package:apple_shop/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 

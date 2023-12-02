@@ -4,8 +4,8 @@ import 'package:apple_shop/data/model/product_properties.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/data/model/variant.dart';
 import 'package:apple_shop/data/model/variant_types.dart';
-import 'package:apple_shop/di/api_di.dart';
-import 'package:apple_shop/utils/api_exception.dart';
+import 'package:apple_shop/features/di/api_di.dart';
+import 'package:apple_shop/features/utils/api_exception.dart';
 import 'package:dio/dio.dart';
 
 abstract class IProductDetailDatasource {

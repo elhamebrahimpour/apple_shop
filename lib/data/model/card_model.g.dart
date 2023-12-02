@@ -46,7 +46,7 @@ class CardModelAdapter extends TypeAdapter<CardModel> {
       ..writeByte(5)
       ..write(obj.price)
       ..writeByte(6)
-      ..write(obj.discount_price)
+      ..write(obj.discountPrice)
       ..writeByte(7)
       ..write(obj.realPrice)
       ..writeByte(8)
