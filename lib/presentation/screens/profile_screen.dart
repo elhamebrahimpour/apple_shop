@@ -12,8 +12,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var list = const [];
-
     return Scaffold(
       backgroundColor: AppColors.backColor,
       body: SafeArea(
@@ -25,9 +23,9 @@ class ProfileScreen extends StatelessWidget {
                 title: 'حساب کاربری',
                 searchIconVisibility: false,
               ),
-              const Text(
-                'الهام ابراهیم پور',
-                style: TextStyle(
+              Text(
+                AuthManager.readUserName(),
+                style: const TextStyle(
                   color: AppColors.blackColor,
                   fontFamily: 'sm',
                   fontSize: 16,
@@ -48,27 +46,64 @@ class ProfileScreen extends StatelessWidget {
                 height: 32,
               ),
               Wrap(
-                spacing: 20,
-                runSpacing: 20,
+                spacing: 36,
+                runSpacing: 30,
                 children: [
-                  ...List.generate(
-                    0,
-                    (index) => list[index],
+                  const ProfileItemChip(
+                    title: 'تنظیمات',
+                    icon: 'p_settings',
+                  ),
+                  const ProfileItemChip(
+                    title: 'سفارشات اخیر',
+                    icon: 'p_recent_orders',
+                  ),
+                  const ProfileItemChip(
+                    title: 'آدرس ها',
+                    icon: 'p_address',
+                  ),
+                  const ProfileItemChip(
+                    title: 'بلاگ',
+                    icon: 'p_blog',
+                  ),
+                  const ProfileItemChip(
+                    title: 'نقد و نظرات',
+                    icon: 'p_comments',
+                  ),
+                  const ProfileItemChip(
+                    title: 'تخفیف ها',
+                    icon: 'p_on_sale',
+                  ),
+                  const ProfileItemChip(
+                    title: 'اطلاعیه',
+                    icon: 'p_notif',
+                  ),
+                  const ProfileItemChip(
+                    title: 'علاقه مندی‌ها',
+                    icon: 'p_favorites',
+                  ),
+                  const ProfileItemChip(
+                    title: 'پشتیبانی',
+                    icon: 'p_support',
+                  ),
+                  const ProfileItemChip(
+                    title: 'سفارش در حال انجام',
+                    icon: 'p_orders',
+                  ),
+                  ProfileItemChip(
+                    title: 'خروج',
+                    icon: 'p_exit',
+                    onChipTapped: () {
+                      BlocProvider.of<CardBloc>(context).add(
+                        CardDeleteBoxEvent(),
+                      );
+
+                      AuthManager.logOut();
+                      context.navigateToScreen(
+                        LoginScreen(),
+                      );
+                    },
                   ),
                 ],
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  BlocProvider.of<CardBloc>(context).add(
-                    CardDeleteBoxEvent(),
-                  );
-
-                  AuthManager.logOut();
-                  context.navigateToScreen(
-                    LoginScreen(),
-                  );
-                },
-                child: const Text('خروج'),
               ),
               const Spacer(),
               const Text(
@@ -101,6 +136,67 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ProfileItemChip extends StatelessWidget {
+  final String title;
+  final String icon;
+  final VoidCallback? onChipTapped;
+
+  const ProfileItemChip({
+    required this.title,
+    required this.icon,
+    this.onChipTapped,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onChipTapped!.call(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: 56,
+            width: 56,
+            decoration: ShapeDecoration(
+              color: const Color(0xff3b5edf),
+              shape: ContinuousRectangleBorder(
+                borderRadius: BorderRadius.circular(46),
+              ),
+              shadows: const [
+                BoxShadow(
+                  color: Color(0xff3b5edf),
+                  blurRadius: 20,
+                  spreadRadius: -8,
+                  offset: Offset(0.0, 8),
+                )
+              ],
+            ),
+            child: Center(
+              child: Image.asset(
+                'images/$icon.png',
+                height: 26,
+                width: 26,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Text(
+            title,
+            style: const TextStyle(
+              color: AppColors.blackColor,
+              fontSize: 12,
+              fontFamily: 'sm',
+            ),
+          ),
+        ],
       ),
     );
   }

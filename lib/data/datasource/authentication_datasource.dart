@@ -56,6 +56,9 @@ class AuthenticationRemoteDatasource implements IAuthenticationDatasource {
       );
       if (response.statusCode == 200) {
         AuthManager.saveUserId(response.data['record']['id']);
+        AuthManager.saveUserName(response.data['record']['name'] == ''
+            ? response.data['record']['username']
+            : response.data['record']['name']);
 
         AuthManager.saveToken(response.data?['token']);
 

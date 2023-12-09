@@ -24,6 +24,14 @@ class AuthManager {
     return _sharedPreferences.getString('user_id') ?? '';
   }
 
+  static void saveUserName(String userName) async {
+    _sharedPreferences.setString('user_name', userName);
+  }
+
+  static String readUserName() {
+    return _sharedPreferences.getString('user_name') ?? '';
+  }
+
   static void logOut() {
     _sharedPreferences.clear();
     valueNotifier.value = null;
