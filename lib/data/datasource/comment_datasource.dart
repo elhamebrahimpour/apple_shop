@@ -18,18 +18,18 @@ class CommentDatasource extends ICommentDatasource {
   Future<List<Comments>> getComments(String productId) async {
     try {
       Map<String, dynamic> queryParams = {
-        'filter': 'product_id="$productId"',
-        'perPage': 100,
+        'filter': 'product_id="$productId" && user_id != "" && text != ""',
+        'perPage': '999',
         'expand': 'user_id',
       };
 
-      var response = await _dio.get(
-        'collections/comment/records',
-        queryParameters: queryParams,
-      );
+      var response = await _dio.get('collections/comment/records',
+          queryParameters: queryParams);
 
       return response.data['items']
-          .map<Comments>((jsonObject) => Comments.fromJsonMap(jsonObject))
+          .map<Comments>(
+            (jsonObject) => Comments.fromJsonMap(jsonObject),
+          )
           .toList();
     } on DioException catch (e) {
       throw ApiException(e.response!.statusCode, e.response!.data['message']);

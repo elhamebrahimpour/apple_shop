@@ -22,6 +22,7 @@ class CommentBottomsheet extends StatelessWidget {
               );
         }
       },
+      buildWhen: (previous, current) => previous != current,
       builder: (context, snapshot) {
         return BlocBuilder<CommentBloc, CommentState>(
           builder: (context, state) {
@@ -59,6 +60,8 @@ class CommentBottomsheet extends StatelessWidget {
                           return SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (context, index) {
+                                final reversedIndex =
+                                    comments.length - index - 1;
                                 return Container(
                                   margin: const EdgeInsets.symmetric(
                                     vertical: 8,
@@ -87,9 +90,12 @@ class CommentBottomsheet extends StatelessWidget {
                                               CrossAxisAlignment.end,
                                           children: [
                                             Text(
-                                              comments[index].userName.isEmpty
+                                              comments[reversedIndex]
+                                                      .userName
+                                                      .isEmpty
                                                   ? 'کاربر مهمان'
-                                                  : comments[index].userName,
+                                                  : comments[reversedIndex]
+                                                      .userName,
                                               textAlign: TextAlign.end,
                                               style: const TextStyle(
                                                 color: AppColors.blackColor,
@@ -101,7 +107,7 @@ class CommentBottomsheet extends StatelessWidget {
                                               height: 6,
                                             ),
                                             Text(
-                                              comments[index].text,
+                                              comments[reversedIndex].text,
                                               textAlign: TextAlign.end,
                                               style: const TextStyle(
                                                 color: AppColors.blackColor,
@@ -118,11 +124,14 @@ class CommentBottomsheet extends StatelessWidget {
                                       CircleAvatar(
                                         radius: 18,
                                         backgroundColor: Colors.transparent,
-                                        child: comments[index].avatar.isEmpty
+                                        child: comments[reversedIndex]
+                                                .avatar
+                                                .isEmpty
                                             ? Image.asset('images/avatar.png')
                                             : ImageCachedWidget(
                                                 imageUrl:
-                                                    comments[index].userAvatar,
+                                                    comments[reversedIndex]
+                                                        .userAvatar,
                                               ),
                                       ),
                                     ],
