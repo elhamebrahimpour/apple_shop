@@ -1,11 +1,11 @@
-import 'package:apple_shop/features/utils/auth_manager.dart';
+import 'package:apple_shop/core/utils/auth_manager.dart';
 import 'package:dio/dio.dart';
 
 class DioProvider {
   static Dio createDioWithHeader() {
     return Dio(
       BaseOptions(
-        baseUrl: 'http://startflutter.ir/api/',
+        baseUrl: 'https://startflutter.ir/api/',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${AuthManager.readToken()}',

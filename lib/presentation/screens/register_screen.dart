@@ -1,10 +1,10 @@
 // ignore_for_file: avoid_print
 import 'package:apple_shop/business/bloc/authentication/authentication_bloc.dart';
-import 'package:apple_shop/features/di/api_di.dart';
+import 'package:apple_shop/di/api_di.dart';
 import 'package:apple_shop/presentation/screens/login_screen.dart';
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
-import 'package:apple_shop/features/utils/extensions/context_extension.dart';
-import 'package:apple_shop/features/utils/messenger.dart';
+import 'package:apple_shop/core/constants/app_colors.dart';
+import 'package:apple_shop/core/utils/extensions/context_extension.dart';
+import 'package:apple_shop/core/utils/messenger.dart';
 import 'package:apple_shop/presentation/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -221,10 +221,6 @@ class RegisterActionButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.blue,
-        textStyle: const TextStyle(
-          fontSize: 18,
-          fontFamily: 'sb',
-        ),
         minimumSize: const Size(210, 48),
       ),
       onPressed: () {
@@ -236,7 +232,14 @@ class RegisterActionButton extends StatelessWidget {
           ),
         );
       },
-      child: const Text('ثبت نام'),
+      child: const Text(
+        'ثبت نام',
+        style: TextStyle(
+          fontSize: 18,
+          fontFamily: 'sb',
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }

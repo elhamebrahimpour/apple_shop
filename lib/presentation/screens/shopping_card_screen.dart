@@ -2,9 +2,9 @@
 
 import 'package:apple_shop/business/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/data/model/card_model.dart';
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
-import 'package:apple_shop/features/utils/extensions/int_extension.dart';
-import 'package:apple_shop/features/utils/extensions/string_extension.dart';
+import 'package:apple_shop/core/constants/app_colors.dart';
+import 'package:apple_shop/core/utils/extensions/int_extension.dart';
+import 'package:apple_shop/core/utils/extensions/string_extension.dart';
 import 'package:apple_shop/presentation/widgets/custom_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_line/dotted_line.dart';
@@ -121,6 +121,7 @@ class _ShoppingCardScreenState extends State<ShoppingCardScreen> {
                                 style: const TextStyle(
                                   fontFamily: 'sm',
                                   fontSize: 18,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),

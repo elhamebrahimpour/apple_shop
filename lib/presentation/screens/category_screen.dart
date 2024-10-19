@@ -1,13 +1,14 @@
 import 'package:apple_shop/business/bloc/category/category_bloc.dart';
 import 'package:apple_shop/business/bloc/product_category/product_category_bloc.dart';
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
-import 'package:apple_shop/features/di/api_di.dart';
 import 'package:apple_shop/presentation/screens/products_screen.dart';
 import 'package:apple_shop/presentation/widgets/cached_widget.dart';
 import 'package:apple_shop/presentation/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../core/constants/app_colors.dart';
+import '../../di/api_di.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);

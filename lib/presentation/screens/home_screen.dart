@@ -1,5 +1,4 @@
 import 'package:apple_shop/business/bloc/home/home_bloc.dart';
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/presentation/widgets/banner_slider.dart';
@@ -9,6 +8,8 @@ import 'package:apple_shop/presentation/widgets/loading_animation.dart';
 import 'package:apple_shop/presentation/widgets/product_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../core/constants/app_colors.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);

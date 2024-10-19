@@ -1,5 +1,5 @@
 import 'package:apple_shop/business/bloc/comment/comment_bloc.dart';
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
+import 'package:apple_shop/core/constants/app_colors.dart';
 import 'package:apple_shop/presentation/widgets/cached_widget.dart';
 import 'package:apple_shop/presentation/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';

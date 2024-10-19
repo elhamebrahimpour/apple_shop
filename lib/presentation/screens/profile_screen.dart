@@ -1,8 +1,8 @@
 import 'package:apple_shop/business/bloc/shopping_card/card_bloc.dart';
 import 'package:apple_shop/presentation/screens/login_screen.dart';
-import 'package:apple_shop/features/utils/auth_manager.dart';
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
-import 'package:apple_shop/features/utils/extensions/context_extension.dart';
+import 'package:apple_shop/core/utils/auth_manager.dart';
+import 'package:apple_shop/core/constants/app_colors.dart';
+import 'package:apple_shop/core/utils/extensions/context_extension.dart';
 import 'package:apple_shop/presentation/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

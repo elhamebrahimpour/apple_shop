@@ -1,7 +1,8 @@
+import 'package:apple_shop/core/utils/extensions/context_extension.dart';
 import 'package:apple_shop/presentation/screens/login_screen.dart';
 import 'package:apple_shop/presentation/screens/main_screens.dart';
-import 'package:apple_shop/features/utils/auth_manager.dart';
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
+import 'package:apple_shop/core/utils/auth_manager.dart';
+import 'package:apple_shop/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -76,7 +77,10 @@ class StartIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => navigateToLoginScreen(context),
+      onTap: () => context.navigateToScreen(
+        const DashboardScreen(),
+      ),
+      //navigateToLoginScreen(context),
       child: Container(
         margin: const EdgeInsets.only(right: 22, bottom: 70),
         height: 70,
@@ -143,7 +147,7 @@ class LogoWidget extends StatelessWidget {
           children: [
             Image.asset('images/splash_back.png'),
             Positioned(
-              top: 190,
+              top: 180,
               child: SizedBox(
                 height: 90,
                 width: 90,
@@ -151,7 +155,7 @@ class LogoWidget extends StatelessWidget {
               ),
             ),
             const Positioned(
-              bottom: 190,
+              bottom: 170,
               child: Text(
                 'اپل شاپ',
                 style: TextStyle(

@@ -5,23 +5,23 @@ import 'dart:ui';
 import 'package:apple_shop/business/bloc/comment/comment_bloc.dart';
 import 'package:apple_shop/business/bloc/product_details/product_bloc.dart';
 import 'package:apple_shop/business/bloc/shopping_card/card_bloc.dart';
+import 'package:apple_shop/core/utils/extensions/int_extension.dart';
+import 'package:apple_shop/core/utils/extensions/string_extension.dart';
 import 'package:apple_shop/data/model/comment.dart';
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
 import 'package:apple_shop/data/model/category.dart';
 import 'package:apple_shop/data/model/product.dart';
 import 'package:apple_shop/data/model/product_gallery_image.dart';
 import 'package:apple_shop/data/model/product_properties.dart';
 import 'package:apple_shop/data/model/product_variants.dart';
 import 'package:apple_shop/data/model/variant_types.dart';
-import 'package:apple_shop/features/di/api_di.dart';
-import 'package:apple_shop/features/utils/extensions/int_extension.dart';
-import 'package:apple_shop/features/utils/extensions/string_extension.dart';
 import 'package:apple_shop/presentation/widgets/cached_widget.dart';
 import 'package:apple_shop/presentation/widgets/comment_bottomsheet.dart';
 import 'package:apple_shop/presentation/widgets/loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../core/constants/app_colors.dart';
 import '../../data/model/variant.dart';
+import '../../di/api_di.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   Product product;

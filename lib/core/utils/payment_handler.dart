@@ -1,4 +1,4 @@
-import 'package:apple_shop/features/utils/url_handler.dart';
+import 'package:apple_shop/core/utils/url_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:zarinpal/zarinpal.dart';
 

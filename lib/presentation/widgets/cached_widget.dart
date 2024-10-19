@@ -1,4 +1,4 @@
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
+import 'package:apple_shop/core/constants/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

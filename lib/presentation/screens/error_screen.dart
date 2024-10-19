@@ -1,5 +1,6 @@
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/constants/app_colors.dart';
 
 class ErrorScreen extends StatelessWidget {
   const ErrorScreen({super.key});

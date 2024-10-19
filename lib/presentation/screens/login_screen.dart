@@ -1,20 +1,21 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:apple_shop/business/bloc/authentication/authentication_bloc.dart';
-import 'package:apple_shop/features/di/api_di.dart';
+import 'package:apple_shop/core/utils/extensions/context_extension.dart';
 import 'package:apple_shop/presentation/screens/register_screen.dart';
-import 'package:apple_shop/features/utils/constants/app_colors.dart';
-import 'package:apple_shop/features/utils/extensions/context_extension.dart';
-import 'package:apple_shop/features/utils/messenger.dart';
 import 'package:apple_shop/presentation/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:apple_shop/presentation/screens/main_screens.dart';
 
+import '../../core/constants/app_colors.dart';
+import '../../core/utils/messenger.dart';
+import '../../di/api_di.dart';
+
 class LoginScreen extends StatelessWidget {
   LoginScreen({Key? key}) : super(key: key);
-  final _userNameTextController = TextEditingController(text: 'hamid');
-  final _passwordTextController = TextEditingController(text: '12345678');
+  final _userNameTextController = TextEditingController(text: 'elham');
+  final _passwordTextController = TextEditingController(text: '123456789');
 
   @override
   Widget build(BuildContext context) {
@@ -200,10 +201,6 @@ class LoginActionButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.blue,
-        textStyle: const TextStyle(
-          fontSize: 18,
-          fontFamily: 'sb',
-        ),
         minimumSize: const Size(210, 48),
       ),
       onPressed: () {
@@ -214,7 +211,14 @@ class LoginActionButton extends StatelessWidget {
           ),
         );
       },
-      child: const Text('ورود به حساب کاربری'),
+      child: const Text(
+        'ورود به حساب کاربری',
+        style: TextStyle(
+          fontSize: 18,
+          fontFamily: 'sb',
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }
